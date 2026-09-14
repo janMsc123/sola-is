@@ -1,0 +1,42 @@
+services:
+  baza:
+    image: mariadb:11
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_GESLO}
+      MARIADB_DATABASE: ${DB_NAME}
+      MARIADB_USER: ${DB_USER}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - baza_podatki:/var/lib/mysql
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    networks:
+      - solanet
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  aplikacija:
+    build: ./app
+    restart: unless-stopped
+    depends_on:
+      baza:
+        condition: service_healthy
+    environment:
+      PORT: 3000
+      DB_HOST: baza
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+    ports:
+      - "8097:3000"
+    networks:
+      - solanet
+
+networks:
+  solanet:
+
+volumes:
+  baza_podatki:
