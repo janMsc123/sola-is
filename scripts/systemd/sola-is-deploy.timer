@@ -1,0 +1,12 @@
+[Unit]
+Description=Poll GitHub for sola-is updates every minute
+Requires=sola-is-deploy.service
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=1min
+AccuracySec=15s
+Unit=sola-is-deploy.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,11 @@
+[Unit]
+Description=sola-is auto-deploy from GitHub main
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=pajp
+Group=pajp
+WorkingDirectory=/home/pajp/stacks/sola-is
+ExecStart=/home/pajp/stacks/sola-is/scripts/auto-deploy.sh
