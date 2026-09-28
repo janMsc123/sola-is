@@ -4,8 +4,7 @@ Spletna aplikacija za podporo šolskemu delu na daljavo — projekt zaključnega
 
 ## Skupina
 - **Pajp** — vzdrževalec informacijskega sistema (IS)
-- **Nal Dobravc** — razvijalec aplikacije
-- **Mitja Jančič** — razvijalec aplikacije
+- **CRTPET1** — razvijalec aplikacije
 
 ## Tehnologije
 - **Backend:** Node.js + Express
@@ -40,8 +39,7 @@ sola-is/
 
 ## Veje (branches)
 - `main` — stabilna, produkcijska različica; vsi merge-i preko pull requesta
-- `nal` — delovna veja za Nal Dobravc
-- `mitja` — delovna veja za Mitja Jančič
+- `crt` — delovna veja za CRTPET1
 - `pajp` / feature-veje — po potrebi
 
 ## Kako pognati lokalno
