@@ -6,9 +6,7 @@ Vsak dijak zase piše sproti. Struktura mape:
 porocila/
 ├── pajp/
 │   └── 2026-09-14.md
-├── nal/
-│   └── 2026-09-14.md
-└── mitja/
+└── crt/
     └── 2026-09-14.md
 ```
 
