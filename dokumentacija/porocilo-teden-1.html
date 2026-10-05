@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="sl">
+<head>
+<meta charset="utf-8">
+<title>Šolski IS, tedensko poročilo 1</title>
+<link rel="stylesheet" href="porocilo.css">
+</head>
+<body>
+
+<div class="title">
+  <h1>Šolski informacijski sistem</h1>
+  <div class="sub">Tedensko poročilo, teden 1: analiza, načrtovanje in priprava okolja</div>
+</div>
+
+<table class="meta">
+  <tr><td>Predmet:</td><td>RPS, Računalniški produkti in storitve</td></tr>
+  <tr><td>Obdobje:</td><td>14. 9. do 20. 9. 2026</td></tr>
+  <tr><td>Člani:</td><td>Jan Marko (vzdrževalec IS), Črt Peterlin (razvijalec), Matevž Zvir (razvijalec)</td></tr>
+  <tr><td>Repozitorij:</td><td>https://github.com/janMsc123/sola-is</td></tr>
+  <tr><td>Aplikacija:</td><td>https://projekt.pajp.duckdns.org</td></tr>
+</table>
+
+<h2>Povzetek napredka</h2>
+<ul>
+  <li><b>Jan Marko (vzdrževalec IS):</b> ustvaril je repozitorij na GitHubu in strukturo map (<code>app/</code>, <code>db/init/</code>, <code>porocila/</code>, <code>dokumentacija/</code>, <code>scripts/</code>). Pripravil je <code>Dockerfile</code> in <code>docker-compose.yml</code> z bazo MariaDB in aplikacijo ter na strežniku z Linuxom zagnal preizkusni vsebnik. Javno domeno je prek obrnjenega posrednika Caddy, ki sam pridobi potrdilo Let's Encrypt, usmeril na aplikacijo. Nastavil je še samodejno namestitev: systemd timer vsako minuto preveri vejo <code>main</code> in ob spremembi ponovno zgradi vsebnike.</li>
+  <li><b>Črt Peterlin in Matevž Zvir (razvijalca):</b> analizirala sta zahteve iz navodil, pripravila specifikacijo za vse tri poglede in zasnovala podatkovni model (ER diagram spodaj).</li>
+  <li><b>Vsi:</b> na uvodnem sestanku smo izbrali tehnologije in si razdelili vloge.</li>
+</ul>
+
+<h2>Izbrane tehnologije</h2>
+<table>
+  <tr><th style="width:24%">Področje</th><th style="width:26%">Izbira</th><th>Razlog</th></tr>
+  <tr><td>Aplikacija</td><td>Node.js 20 + Express</td><td>Na strežniku in v brskalniku pišemo v istem jeziku (JavaScript).</td></tr>
+  <tr><td>Podatkovna baza</td><td>MariaDB 11</td><td>Je odprtokodna relacijska baza, ki jo poznamo s pouka.</td></tr>
+  <tr><td>Frontend</td><td>HTML, CSS, JS</td><td>Brez ogrodij, da je odvisnosti čim manj.</td></tr>
+  <tr><td>Vsebniki</td><td>Docker + Docker Compose</td><td>Celotno okolje zaženemo z enim ukazom.</td></tr>
+  <tr><td>HTTPS in domena</td><td>Caddy, DuckDNS</td><td>Potrdilo Let's Encrypt se pridobi samodejno, poddomena je brezplačna.</td></tr>
+</table>
+
+<h2>Specifikacija sistema (povzetek)</h2>
+<table>
+  <tr><th style="width:18%">Pogled</th><th>Funkcionalnosti</th></tr>
+  <tr><td>Administrator</td><td>Vnaša, ureja in briše predmete (vsaj 10), učitelje (vsaj 20) in učence (vsaj 100). Učiteljem dodeljuje predmete, učence pa vpisuje k predmetom.</td></tr>
+  <tr><td>Učitelj</td><td>Nalaga in briše gradiva samo pri predmetih, ki jih poučuje, in pregleduje naloge, ki so jih oddali učenci.</td></tr>
+  <tr><td>Učenec</td><td>Se registrira, ureja svoj profil in izbira predmete. Vidi gradiva in oddaja naloge, ki se shranijo kot <code>Priimek Ime - Naslov naloge.ext</code>. Ponovna oddaja povozi prejšnjo šele po njegovi potrditvi.</td></tr>
+</table>
+<p>Gesla so shranjena samo zgoščena (bcrypt). Vsi trije pogledi uporabljajo skupno prijavo, pravice pa se preverjajo na strežniku glede na vlogo uporabnika.</p>
+
+<h2>ER diagram podatkovne baze</h2>
+<figure class="keep">
+  <img src="er-diagram.png" alt="ER diagram" style="width:85%">
+  <figcaption>Slika 1: ER diagram (avtor Matevž Zvir, dbdiagram.io), 8 tabel s primarnimi in tujimi ključi</figcaption>
+</figure>
+<p>Tabela <code>uporabniki</code> hrani prijavne podatke in vlogo. Tabeli <code>ucitelji</code> in <code>ucenci</code> sta nanjo vezani prek <code>uporabnik_id</code>. Razmerji M:N med učitelji in predmeti ter med učenci in predmeti razrešujeta povezovalni tabeli <code>ucitelj_predmet</code> in <code>ucenec_predmet</code>. V tabeli <code>gradiva</code> so datoteke učiteljev, v tabeli <code>naloge</code> pa oddaje učencev.</p>
+
+<h2>Sklepi sestanka</h2>
+<ul>
+  <li>Vloge: Jan Marko je vzdrževalec IS, Črt Peterlin in Matevž Zvir sta razvijalca.</li>
+  <li>Vsak dela na svoji veji. V <code>main</code> združujemo samo prek pull requesta, ker se <code>main</code> samodejno namesti na strežnik.</li>
+  <li>Dnevna poročila pišemo v <code>porocila/&lt;ime&gt;/</code>.</li>
+</ul>
+
+<h2>Stanje zahtev</h2>
+<table>
+  <tr><th>Zahteva</th><th style="width:16%">Stanje</th></tr>
+  <tr><td>Repozitorij na GitHubu, dostopen mentorju</td><td class="ok">opravljeno</td></tr>
+  <tr><td>Docker okolje in preizkusni vsebnik</td><td class="ok">opravljeno</td></tr>
+  <tr><td>Specifikacija za vse tri poglede</td><td class="ok">opravljeno</td></tr>
+  <tr><td>ER diagram (najmanj 4 tabele, PK in FK)</td><td class="ok">opravljeno</td></tr>
+  <tr><td>Skice (wireframe) za vse tri poglede</td><td class="part">v izdelavi</td></tr>
+</table>
+
+<div class="keep"><h2>Načrt za teden 2</h2>
+<p>Napisali bomo SQL skripto za tabele po ER diagramu in pripravili testne podatke. Dokončali bomo <code>docker-compose.yml</code> in <code>.env</code> ter aplikacijo povezali z bazo.</p></div>
+
+</body>
+</html>
