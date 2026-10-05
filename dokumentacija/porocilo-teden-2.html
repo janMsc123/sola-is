@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="sl">
+<head>
+<meta charset="utf-8">
+<title>Šolski IS, tedensko poročilo 2</title>
+<link rel="stylesheet" href="porocilo.css">
+</head>
+<body>
+
+<div class="title">
+  <h1>Šolski informacijski sistem</h1>
+  <div class="sub">Tedensko poročilo, teden 2: postavitev infrastrukture in podatkovne baze</div>
+</div>
+
+<table class="meta">
+  <tr><td>Predmet:</td><td>RPS, Računalniški produkti in storitve</td></tr>
+  <tr><td>Obdobje:</td><td>21. 9. do 28. 9. 2026</td></tr>
+  <tr><td>Člani:</td><td>Jan Marko (vzdrževalec IS), Črt Peterlin (razvijalec), Matevž Zvir (razvijalec)</td></tr>
+  <tr><td>Repozitorij:</td><td>https://github.com/janMsc123/sola-is</td></tr>
+  <tr><td>Aplikacija:</td><td>https://projekt.pajp.duckdns.org</td></tr>
+</table>
+
+<h2>Povzetek napredka</h2>
+<ul>
+  <li><b>Jan Marko (vzdrževalec IS):</b> dokončal je <code>docker-compose.yml</code> in pripravil predlogo okoljskih spremenljivk <code>.env.example</code>. Uredil je veje v repozitoriju in v repozitorij dodal uradna navodila.</li>
+  <li><b>Črt Peterlin in Matevž Zvir (razvijalca):</b> po ER diagramu sta napisala SQL skripto <code>db/init/01-schema.sql</code> z 8 tabelami. Aplikacija se z bazo povezuje prek knjižnice <code>mysql2</code>.</li>
+</ul>
+
+<h2>Opis datoteke docker-compose.yml</h2>
+<table>
+  <tr><th style="width:22%">Del</th><th>Opis</th></tr>
+  <tr><td>storitev <code>baza</code></td><td>Uradna slika <code>mariadb:11</code>, gesla in ime baze se preberejo iz <code>.env</code>. Volumen <code>baza_podatki</code> ohrani podatke ob ponovnem zagonu. Mapa <code>./db/init</code> je priklopljena v <code>/docker-entrypoint-initdb.d</code>, zato se ob prvem zagonu samodejno ustvarijo tabele. Healthcheck preveri, ali je baza pripravljena.</td></tr>
+  <tr><td>storitev <code>aplikacija</code></td><td>Zgradi se iz <code>./app/Dockerfile</code> (<code>node:20-alpine</code>). Zažene se šele, ko je baza zdrava (<code>depends_on: service_healthy</code>). Do baze dostopa po imenu <code>baza</code>. Vrata 3000 so na strežniku preslikana na 8097.</td></tr>
+  <tr><td>omrežje <code>solanet</code></td><td>Je skupno notranje omrežje. Baza nima odprtih vrat navzven, zato jo doseže samo aplikacija.</td></tr>
+  <tr><td><code>.env</code></td><td>Gesla niso v repozitoriju (<code>.env</code> je v <code>.gitignore</code>). Vsak član skopira <code>.env.example</code> v <code>.env</code>.</td></tr>
+</table>
+<p>Celotno okolje se zažene z enim ukazom:</p>
+<pre>cp .env.example .env
+docker compose up -d --build</pre>
+
+<h2>Struktura podatkovne baze</h2>
+<table>
+  <tr><th style="width:22%">Tabela</th><th>Namen</th><th style="width:30%">Ključi</th></tr>
+  <tr><td><code>uporabniki</code></td><td>Prijava: e-pošta, zgoščeno geslo, vloga (administrator, ucitelj, ucenec)</td><td>PK <code>id</code></td></tr>
+  <tr><td><code>ucitelji</code></td><td>Ime in priimek učitelja</td><td>PK <code>id</code>, FK <code>uporabnik_id</code></td></tr>
+  <tr><td><code>ucenci</code></td><td>Ime in priimek učenca</td><td>PK <code>id</code>, FK <code>uporabnik_id</code></td></tr>
+  <tr><td><code>predmeti</code></td><td>Seznam predmetov</td><td>PK <code>id</code></td></tr>
+  <tr><td><code>ucitelj_predmet</code></td><td>Kdo uči kateri predmet (M:N)</td><td>PK in FK <code>ucitelj_id</code>, <code>predmet_id</code></td></tr>
+  <tr><td><code>ucenec_predmet</code></td><td>Kdo obiskuje kateri predmet (M:N)</td><td>PK in FK <code>ucenec_id</code>, <code>predmet_id</code></td></tr>
+  <tr><td><code>gradiva</code></td><td>Datoteke učiteljev pri predmetu</td><td>PK <code>id</code>, FK <code>predmet_id</code>, <code>ucitelj_id</code></td></tr>
+  <tr><td><code>naloge</code></td><td>Oddaje učencev, polje <code>potrjeno</code> za ponovno oddajo</td><td>PK <code>id</code>, FK <code>predmet_id</code>, <code>ucenec_id</code></td></tr>
+</table>
+<p>Struktura je normalizirana: vsak podatek je shranjen samo enkrat, povezave pa so izvedene s tujimi ključi z <code>ON DELETE CASCADE</code>, zato ob brisanju ne ostanejo osiroteli zapisi. ER diagram je v poročilu za teden 1.</p>
+
+<h2>Delujoče okolje</h2>
+<p>Aplikacija teče na javni domeni. Klic <code>https://projekt.pajp.duckdns.org/api/health</code> vrne:</p>
+<pre>{"status":"ok","db":true}</pre>
+<p>To pomeni, da oba vsebnika delujeta in da se aplikacija uspešno poveže z bazo.</p>
+
+<h2>Stanje zahtev</h2>
+<table>
+  <tr><th>Zahteva</th><th style="width:16%">Stanje</th></tr>
+  <tr><td>Baza teče v svojem vsebniku, ločenem od aplikacije</td><td class="ok">opravljeno</td></tr>
+  <tr><td>Aplikacija se z bazo poveže znotraj Docker omrežja</td><td class="ok">opravljeno</td></tr>
+  <tr><td>SQL skripta za ustvarjanje tabel</td><td class="ok">opravljeno</td></tr>
+  <tr><td>Okolje se zažene z <code>docker compose up</code></td><td class="ok">opravljeno</td></tr>
+  <tr><td>Veja <code>develop</code> in pravila za pull requeste</td><td class="part">delno</td></tr>
+  <tr><td>Testni podatki (10 predmetov, 20 učiteljev, 100 učencev)</td><td class="no">ni še</td></tr>
+</table>
+
+<h2>Česa nismo dokončali in zakaj</h2>
+<ul>
+  <li><b>Testni podatki:</b> zaradi spremembe sestave skupine smo jih prestavili v teden 3. Pripravili jih bomo v skripti <code>db/init/02-testni-podatki.sql</code>.</li>
+  <li><b>Veja develop:</b> zaenkrat delamo na osebnih vejah in v <code>main</code> združujemo prek pull requesta. Vejo <code>develop</code> bomo dodali v tednu 3.</li>
+</ul>
+
+<h2>Načrt za teden 3</h2>
+<p>Razvijalca bosta pripravila testne podatke in administratorski pogled za vnos, urejanje in brisanje predmetov, učiteljev in učencev. Vzdrževalec IS bo nastavil vejo <code>develop</code> in obrnjeni posrednik ter začel dokumentacijo namestitve.</p>
+
+</body>
+</html>
