@@ -1,0 +1,31 @@
+<!-- ucenec/profil.ejs — učenec ureja svoje podatke -->
+<%- include('../glava', { naslov: 'Profil' }) %>
+
+<div class="okvir ozek">
+  <h1>Moj profil</h1>
+
+  <% if (napaka) { %>
+    <p class="napaka"><%= napaka %></p>
+  <% } %>
+  <% if (uspeh) { %>
+    <p class="uspeh"><%= uspeh %></p>
+  <% } %>
+
+  <form method="post" action="/ucenec/profil">
+    <label>Ime
+      <input name="ime" value="<%= profil.ime %>" required>
+    </label>
+    <label>Priimek
+      <input name="priimek" value="<%= profil.priimek %>" required>
+    </label>
+    <label>Email
+      <input type="email" name="email" value="<%= profil.email %>" required>
+    </label>
+    <label>Novo geslo (pustite prazno, če ga ne spreminjate)
+      <input type="password" name="geslo">
+    </label>
+    <button type="submit">Shrani</button>
+  </form>
+</div>
+
+<%- include('../noga') %>

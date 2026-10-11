@@ -1,0 +1,20 @@
+<!-- admin/predmet-uredi.ejs — sprememba naziva predmeta -->
+<%- include('../glava', { naslov: 'Uredi predmet' }) %>
+
+<div class="okvir ozek">
+  <h1>Uredi predmet</h1>
+
+  <% if (napaka) { %>
+    <p class="napaka"><%= napaka %></p>
+  <% } %>
+
+  <form method="post" action="/admin/predmeti/<%= predmet.id %>">
+    <label>Naziv
+      <input name="naziv" value="<%= predmet.naziv %>" required>
+    </label>
+    <button type="submit">Shrani</button>
+    <a href="/admin/predmeti">Prekliči</a>
+  </form>
+</div>
+
+<%- include('../noga') %>
