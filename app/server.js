@@ -37,8 +37,11 @@ app.use((req, res, next) => {
 });
 
 // ===== 3) POTI =====
-// Tukaj bomo dodajali datoteke s potmi, ko jih naredimo, npr.:
-// app.use('/admin', require('./routes/admin'));
+// vsak pogled ima svojo datoteko v mapi "routes"
+app.use('/', require('./routes/prijava'));          // /prijava, /registracija, /odjava
+app.use('/admin', require('./routes/admin'));       // samo administrator
+app.use('/ucitelj', require('./routes/ucitelj'));   // samo učitelj
+app.use('/ucenec', require('./routes/ucenec'));     // samo učenec
 
 // domača stran: pošlje uporabnika na pravo mesto glede na vlogo
 app.get('/', (req, res) => {
@@ -64,6 +67,23 @@ app.get('/api/health', async (req, res) => {
   } catch (err) {
     res.status(500).json({ status: 'napaka', sporocilo: err.message });
   }
+});
+
+// stran ne obstaja (404)
+app.use((req, res) => {
+  res.status(404).render('napaka', { sporocilo: 'Stran ne obstaja.' });
+});
+
+// nepričakovana napaka (npr. baza ne deluje) -> lepo sporočilo namesto sesutja
+// (Express 5 sam ujame napake iz async funkcij in jih pošlje sem)
+app.use((err, req, res, next) => {
+  console.error(err); // podrobnosti zapišemo v dnevnik (docker logs)
+
+  // prevelika datoteka (omejitev v datoteke.js)
+  if (err.code === 'LIMIT_FILE_SIZE') {
+    return res.status(400).render('napaka', { sporocilo: 'Datoteka je prevelika (največ 20 MB).' });
+  }
+  res.status(500).render('napaka', { sporocilo: 'Prišlo je do napake na strežniku.' });
 });
 
 // ===== 4) ZAGON =====
