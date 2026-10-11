@@ -1,0 +1,42 @@
+<!-- admin/predmeti.ejs — seznam predmetov, dodajanje, urejanje, brisanje -->
+<%- include('../glava', { naslov: 'Predmeti' }) %>
+
+<h1>Predmeti</h1>
+
+<% if (napaka) { %>
+  <p class="napaka"><%= napaka %></p>
+<% } %>
+
+<!-- dodajanje novega predmeta -->
+<form method="post" action="/admin/predmeti" class="vrstica">
+  <input name="naziv" placeholder="Naziv novega predmeta" required>
+  <button type="submit">Dodaj</button>
+</form>
+
+<div class="tabela">
+<table>
+  <tr>
+    <th>Naziv</th>
+    <th>Učiteljev</th>
+    <th>Učencev</th>
+    <th></th>
+  </tr>
+  <% for (const p of predmeti) { %>
+  <tr>
+    <td><%= p.naziv %></td>
+    <td><%= p.st_uciteljev %></td>
+    <td><%= p.st_ucencev %></td>
+    <td class="gumbi">
+      <a class="gumb" href="/admin/predmeti/<%= p.id %>">Uredi</a>
+      <!-- brisanje je POST obrazec, confirm() vpraša za potrditev -->
+      <form method="post" action="/admin/predmeti/<%= p.id %>/brisi"
+            onsubmit="return confirm('Res želite izbrisati predmet <%= p.naziv %>? Izbrišejo se tudi gradiva in naloge.')">
+        <button class="rdec">Briši</button>
+      </form>
+    </td>
+  </tr>
+  <% } %>
+</table>
+</div>
+
+<%- include('../noga') %>

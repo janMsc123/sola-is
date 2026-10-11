@@ -4,3 +4,5 @@ app/node_modules/
 *.log
 deploy.log
 .DS_Store
+varnostne-kopije/
+datoteke/

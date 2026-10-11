@@ -1,0 +1,19 @@
+<!-- admin/domov.ejs — začetna stran administratorja -->
+<%- include('../glava', { naslov: 'Administrator' }) %>
+
+<h1>Administrator</h1>
+
+<!-- tri kartice s številom zapisov -->
+<div class="kartice">
+  <a class="kartica" href="/admin/predmeti">
+    <b><%= st.predmeti %></b> predmetov
+  </a>
+  <a class="kartica" href="/admin/ucitelji">
+    <b><%= st.ucitelji %></b> učiteljev
+  </a>
+  <a class="kartica" href="/admin/ucenci">
+    <b><%= st.ucenci %></b> učencev
+  </a>
+</div>
+
+<%- include('../noga') %>
