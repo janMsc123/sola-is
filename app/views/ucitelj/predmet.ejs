@@ -1,0 +1,63 @@
+<!-- ucitelj/predmet.ejs — gradiva in oddane naloge pri enem predmetu -->
+<%- include('../glava', { naslov: predmet.naziv }) %>
+
+<h1><%= predmet.naziv %></h1>
+
+<% if (napaka) { %>
+  <p class="napaka"><%= napaka %></p>
+<% } %>
+
+<h2>Gradiva</h2>
+
+<!-- enctype="multipart/form-data" je obvezen, če obrazec pošilja datoteko -->
+<form method="post" action="/ucitelj/predmet/<%= predmet.id %>/gradivo"
+      enctype="multipart/form-data" class="vrstica">
+  <input type="file" name="datoteka" required>
+  <button type="submit">Naloži gradivo</button>
+</form>
+
+<% if (gradiva.length === 0) { %>
+  <p>Ni še gradiv.</p>
+<% } else { %>
+<div class="tabela">
+<table>
+  <tr><th>Datoteka</th><th>Naložil</th><th>Datum</th><th></th></tr>
+  <% for (const g of gradiva) { %>
+  <tr>
+    <td><a href="/ucitelj/gradivo/<%= g.id %>"><%= g.ime_datoteke %></a></td>
+    <td><%= g.ime %> <%= g.priimek %></td>
+    <td><%= g.nalozeno.toLocaleString('sl-SI') %></td>
+    <td>
+      <form method="post" action="/ucitelj/gradivo/<%= g.id %>/brisi"
+            onsubmit="return confirm('Res želite izbrisati to gradivo?')">
+        <button class="rdec">Briši</button>
+      </form>
+    </td>
+  </tr>
+  <% } %>
+</table>
+</div>
+<% } %>
+
+<h2>Oddane naloge (<%= naloge.length %>)</h2>
+
+<% if (naloge.length === 0) { %>
+  <p>Učenci še niso oddali nobene naloge.</p>
+<% } else { %>
+<div class="tabela">
+<table>
+  <tr><th>Učenec</th><th>Datoteka</th><th>Oddano</th></tr>
+  <% for (const n of naloge) { %>
+  <tr>
+    <td><%= n.priimek %> <%= n.ime %></td>
+    <td><a href="/ucitelj/naloga/<%= n.id %>"><%= n.ime_datoteke %></a></td>
+    <td><%= n.oddano.toLocaleString('sl-SI') %></td>
+  </tr>
+  <% } %>
+</table>
+</div>
+<% } %>
+
+<p><a href="/ucitelj">← Nazaj na moje predmete</a></p>
+
+<%- include('../noga') %>

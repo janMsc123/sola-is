@@ -1,0 +1,43 @@
+<!-- glava.ejs — vrh vsake strani: naslov in meni glede na vlogo -->
+<!doctype html>
+<html lang="sl">
+<head>
+  <meta charset="utf-8">
+  <!-- da se stran prav prikaže na telefonu -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= naslov %> | Šolski IS</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<header>
+  <a href="/" class="logo">Šolski IS</a>
+
+  <nav>
+    <% if (!uporabnik) { %>
+      <!-- ni prijavljen -->
+      <a href="/prijava">Prijava</a>
+      <a href="/registracija">Registracija</a>
+
+    <% } else if (uporabnik.vloga === 'administrator') { %>
+      <a href="/admin/predmeti">Predmeti</a>
+      <a href="/admin/ucitelji">Učitelji</a>
+      <a href="/admin/ucenci">Učenci</a>
+
+    <% } else if (uporabnik.vloga === 'ucitelj') { %>
+      <a href="/ucitelj">Moji predmeti</a>
+
+    <% } else { %>
+      <a href="/ucenec">Moji predmeti</a>
+      <a href="/ucenec/predmeti">Izbira predmetov</a>
+      <a href="/ucenec/profil">Profil</a>
+    <% } %>
+
+    <% if (uporabnik) { %>
+      <span class="ime"><%= uporabnik.ime %></span>
+      <a href="/odjava">Odjava</a>
+    <% } %>
+  </nav>
+</header>
+
+<main>
