@@ -1,13 +1,16 @@
 # Poročila
 
+## Kdaj delamo
+- **Ponedeljek:** delo v šoli med prakso.
+- **Nedelja zvečer:** sestanek na Discordu, predstavitev narejenega in dokončanje dela iz ponedeljka.
+
 ## Dnevna poročila
-Vsak dijak zase piše sproti. Struktura mape:
+Vsak član piše svoja poročila v svojo mapo, ena datoteka na dan (`LLLL-MM-DD.md`):
 ```
 porocila/
-├── pajp/
-│   └── 2026-09-14.md
-└── crt/
-    └── 2026-09-14.md
+├── pajp/      Jan Marko (vzdrževalec IS)
+├── crt/       Črt Peterlin (razvijalec)
+└── matevz/    Matevž Zvir (razvijalec)
 ```
 
 Vsebina dnevnega poročila:
@@ -17,4 +20,4 @@ Vsebina dnevnega poročila:
 - **Česa mi ni uspelo dokončati in zakaj**
 
 ## Tedenska poročila
-Skupno, do pol strani. Datoteka: `porocila/teden-<n>.md`.
+Skupno, do pol strani, z zaslonskimi slikami: `dokumentacija/porocilo-teden-<n>.html` in `.pdf`.

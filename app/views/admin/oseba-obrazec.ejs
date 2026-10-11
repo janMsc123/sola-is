@@ -3,7 +3,7 @@
 <%- include('../glava', { naslov: oseba.id ? 'Uredi' : 'Dodaj' }) %>
 
 <div class="okvir">
-  <h1><%= oseba.id ? 'Uredi' : 'Nov' %> <%= v.ednina %></h1>
+  <h1><%= oseba.id ? 'Uredi ' + v.tozilnik : 'Nov ' + v.ednina %></h1>
 
   <% if (napaka) { %>
     <p class="napaka"><%= napaka %></p>
