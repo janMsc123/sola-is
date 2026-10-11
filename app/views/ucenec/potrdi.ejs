@@ -1,0 +1,19 @@
+<!-- ucenec/potrdi.ejs — vprašanje pred ponovno oddajo naloge -->
+<%- include('../glava', { naslov: 'Potrditev oddaje' }) %>
+
+<div class="okvir ozek">
+  <h1>Naloga že obstaja</h1>
+  <p>Nalogo <b><%= naloga.ime_datoteke %></b> ste že oddali.</p>
+  <p>Ali jo želite zamenjati z novo datoteko? Prejšnja bo izbrisana.</p>
+
+  <div class="vrstica">
+    <form method="post" action="/ucenec/potrdi/<%= naloga.id %>">
+      <button type="submit">Da, zamenjaj</button>
+    </form>
+    <form method="post" action="/ucenec/preklici/<%= naloga.id %>">
+      <button type="submit" class="siv">Ne, obdrži prejšnjo</button>
+    </form>
+  </div>
+</div>
+
+<%- include('../noga') %>
