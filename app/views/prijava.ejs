@@ -1,0 +1,24 @@
+<!-- prijava.ejs — obrazec za prijavo (skupen za vse tri vloge) -->
+<%- include('glava', { naslov: 'Prijava' }) %>
+
+<div class="okvir ozek">
+  <h1>Prijava</h1>
+
+  <% if (napaka) { %>
+    <p class="napaka"><%= napaka %></p>
+  <% } %>
+
+  <form method="post" action="/prijava">
+    <label>Email
+      <input type="email" name="email" value="<%= email %>" required>
+    </label>
+    <label>Geslo
+      <input type="password" name="geslo" required>
+    </label>
+    <button type="submit">Prijava</button>
+  </form>
+
+  <p>Nimate računa? <a href="/registracija">Registracija za učence</a></p>
+</div>
+
+<%- include('noga') %>

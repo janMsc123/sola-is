@@ -1,0 +1,53 @@
+<!-- ucenec/predmet.ejs — gradiva predmeta in oddaja naloge -->
+<%- include('../glava', { naslov: predmet.naziv }) %>
+
+<h1><%= predmet.naziv %></h1>
+
+<% if (napaka) { %>
+  <p class="napaka"><%= napaka %></p>
+<% } %>
+
+<h2>Gradiva</h2>
+
+<% if (gradiva.length === 0) { %>
+  <p>Učitelj še ni naložil gradiv.</p>
+<% } else { %>
+  <ul>
+    <% for (const g of gradiva) { %>
+      <li>
+        <a href="/ucenec/gradivo/<%= g.id %>"><%= g.ime_datoteke %></a>
+        <small>(<%= g.nalozeno.toLocaleDateString('sl-SI') %>)</small>
+      </li>
+    <% } %>
+  </ul>
+<% } %>
+
+<h2>Oddaja naloge</h2>
+
+<!-- datoteka se shrani kot "Priimek Ime - Naslov naloge.končnica" -->
+<form method="post" action="/ucenec/predmet/<%= predmet.id %>/oddaja"
+      enctype="multipart/form-data" class="okvir">
+  <label>Naslov naloge
+    <input name="naslov" placeholder="npr. Domača naloga 1" required>
+  </label>
+  <label>Datoteka
+    <input type="file" name="datoteka" required>
+  </label>
+  <button type="submit">Oddaj</button>
+</form>
+
+<h2>Moje oddane naloge</h2>
+
+<% if (naloge.length === 0) { %>
+  <p>Pri tem predmetu še niste oddali nobene naloge.</p>
+<% } else { %>
+  <ul>
+    <% for (const n of naloge) { %>
+      <li><%= n.ime_datoteke %> <small>(<%= n.oddano.toLocaleString('sl-SI') %>)</small></li>
+    <% } %>
+  </ul>
+<% } %>
+
+<p><a href="/ucenec">← Nazaj na moje predmete</a></p>
+
+<%- include('../noga') %>

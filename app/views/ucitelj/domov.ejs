@@ -1,0 +1,19 @@
+<!-- ucitelj/domov.ejs — seznam predmetov, ki jih učitelj poučuje -->
+<%- include('../glava', { naslov: 'Moji predmeti' }) %>
+
+<h1>Moji predmeti</h1>
+
+<% if (predmeti.length === 0) { %>
+  <p>Ne poučujete nobenega predmeta. Obrnite se na administratorja.</p>
+<% } %>
+
+<div class="kartice">
+  <% for (const p of predmeti) { %>
+    <a class="kartica" href="/ucitelj/predmet/<%= p.id %>">
+      <b><%= p.naziv %></b>
+      <%= p.st_gradiv %> gradiv · <%= p.st_nalog %> oddanih nalog
+    </a>
+  <% } %>
+</div>
+
+<%- include('../noga') %>

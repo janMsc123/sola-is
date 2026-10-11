@@ -1,0 +1,19 @@
+<!-- ucenec/domov.ejs — seznam predmetov, ki jih učenec obiskuje -->
+<%- include('../glava', { naslov: 'Moji predmeti' }) %>
+
+<h1>Moji predmeti</h1>
+
+<% if (predmeti.length === 0) { %>
+  <p>Niste izbrali še nobenega predmeta. <a href="/ucenec/predmeti">Izberite predmete</a>.</p>
+<% } %>
+
+<div class="kartice">
+  <% for (const p of predmeti) { %>
+    <a class="kartica" href="/ucenec/predmet/<%= p.id %>">
+      <b><%= p.naziv %></b>
+      <%= p.st_gradiv %> gradiv
+    </a>
+  <% } %>
+</div>
+
+<%- include('../noga') %>

@@ -1,0 +1,26 @@
+<!-- ucenec/predmeti.ejs — učenec izbere predmete, ki jih obiskuje -->
+<%- include('../glava', { naslov: 'Izbira predmetov' }) %>
+
+<div class="okvir">
+  <h1>Izbira predmetov</h1>
+  <p>Obkljukajte predmete, ki jih obiskujete (vsaj 2).</p>
+
+  <% if (napaka) { %>
+    <p class="napaka"><%= napaka %></p>
+  <% } %>
+
+  <form method="post" action="/ucenec/predmeti">
+    <fieldset>
+      <% for (const p of predmeti) { %>
+        <label class="kljukica">
+          <input type="checkbox" name="predmeti" value="<%= p.id %>"
+            <%= izbrani.includes(String(p.id)) ? 'checked' : '' %>>
+          <%= p.naziv %>
+        </label>
+      <% } %>
+    </fieldset>
+    <button type="submit">Shrani</button>
+  </form>
+</div>
+
+<%- include('../noga') %>
