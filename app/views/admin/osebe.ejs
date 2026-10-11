@@ -1,0 +1,42 @@
+<!-- admin/osebe.ejs — seznam učiteljev ALI učencev (ista stran za oba) -->
+<!-- v = nastavitve vrste (naslov, ednina ...), vrsta = "ucitelji" ali "ucenci" -->
+<%- include('../glava', { naslov: v.naslov }) %>
+
+<h1><%= v.naslov %> (<%= osebe.length %>)</h1>
+
+<div class="vrstica">
+  <a class="gumb" href="/admin/<%= vrsta %>/nov">+ Dodaj</a>
+
+  <!-- iskanje po imenu ali priimku -->
+  <form method="get" action="/admin/<%= vrsta %>" class="vrstica">
+    <input name="iskanje" value="<%= iskanje %>" placeholder="Išči po imenu ali priimku">
+    <button type="submit">Išči</button>
+  </form>
+</div>
+
+<div class="tabela">
+<table>
+  <tr>
+    <th>Priimek in ime</th>
+    <th>Email</th>
+    <th>Predmeti</th>
+    <th></th>
+  </tr>
+  <% for (const o of osebe) { %>
+  <tr>
+    <td><%= o.priimek %> <%= o.ime %></td>
+    <td><%= o.email %></td>
+    <td><%= o.predmeti || '—' %></td>
+    <td class="gumbi">
+      <a class="gumb" href="/admin/<%= vrsta %>/<%= o.id %>">Uredi</a>
+      <form method="post" action="/admin/<%= vrsta %>/<%= o.id %>/brisi"
+            onsubmit="return confirm('Res želite izbrisati: <%= o.ime %> <%= o.priimek %>?')">
+        <button class="rdec">Briši</button>
+      </form>
+    </td>
+  </tr>
+  <% } %>
+</table>
+</div>
+
+<%- include('../noga') %>

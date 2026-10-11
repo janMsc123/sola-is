@@ -1,0 +1,225 @@
+/* style.css — izgled celotne aplikacije */
+
+/* ===== osnova ===== */
+* {
+  box-sizing: border-box; /* širina vključuje padding in rob */
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f2f4f7;
+  color: #222;
+}
+
+main {
+  max-width: 1000px;
+  margin: 0 auto;   /* vsebina na sredini */
+  padding: 20px;
+}
+
+h1 { color: #1e3a8a; }
+h2 { color: #1e3a8a; margin-top: 30px; }
+
+a { color: #1e3a8a; }
+
+/* ===== glava in meni ===== */
+header {
+  background: #1e3a8a;
+  padding: 10px 20px;
+  display: flex;
+  flex-wrap: wrap;              /* na ozkem zaslonu gre meni v novo vrstico */
+  justify-content: space-between;
+  align-items: center;
+}
+
+header a {
+  color: white;
+  text-decoration: none;
+  margin-right: 15px;
+}
+
+header a:hover {
+  text-decoration: underline;
+}
+
+.logo {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.ime {
+  color: #c7d2fe;
+  margin-right: 15px;
+}
+
+/* ===== noga ===== */
+footer {
+  text-align: center;
+  color: #777;
+  font-size: 13px;
+  padding: 20px;
+}
+
+/* ===== okvirji in kartice ===== */
+.okvir {
+  background: white;
+  padding: 20px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  margin-bottom: 20px;
+}
+
+.ozek {
+  max-width: 400px;
+  margin: 30px auto;
+}
+
+.kartice {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.kartica {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 20px;
+  width: 220px;
+  text-decoration: none;
+  color: #555;
+}
+
+.kartica b {
+  display: block;
+  font-size: 20px;
+  color: #1e3a8a;
+  margin-bottom: 5px;
+}
+
+.kartica:hover {
+  border-color: #1e3a8a;
+}
+
+/* ===== obrazci ===== */
+label {
+  display: block;
+  margin-bottom: 12px;
+}
+
+input[type=email], input[type=password], input:not([type]) {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  margin-top: 4px;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  font-size: 15px;
+}
+
+fieldset {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+
+/* kljukice za predmete v dveh stolpcih */
+.kljukica {
+  display: inline-block;
+  width: 48%;
+  margin-bottom: 6px;
+}
+
+/* elementi v isti vrstici (iskanje, dodajanje) */
+.vrstica {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.vrstica input {
+  width: auto;
+  flex: 1;
+  margin-top: 0;
+}
+
+/* ===== gumbi ===== */
+button, .gumb {
+  background: #1e3a8a;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+
+button:hover, .gumb:hover {
+  background: #2c4fb8;
+}
+
+button.rdec { background: #b91c1c; }
+button.siv  { background: #666; }
+
+/* več gumbov v eni celici tabele */
+.gumbi {
+  white-space: nowrap;
+}
+
+.gumbi form {
+  display: inline;
+}
+
+/* ===== tabele ===== */
+.tabela {
+  overflow-x: auto;   /* na telefonu se tabela premika levo-desno */
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background: #e8edf7;
+}
+
+/* ===== sporočila ===== */
+.napaka {
+  background: #fde2e2;
+  color: #b91c1c;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.uspeh {
+  background: #dcfce7;
+  color: #166534;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+/* ===== telefon (ozek zaslon) ===== */
+@media (max-width: 600px) {
+  main {
+    padding: 10px;
+  }
+  .kartica {
+    width: 100%;
+  }
+  .kljukica {
+    width: 100%;
+  }
+}

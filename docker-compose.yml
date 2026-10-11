@@ -1,4 +1,10 @@
+# docker-compose.yml — celotno okolje: baza + aplikacija
+# zagon: docker compose up -d --build
+# gesla in ključi so v datoteki .env (ni v repozitoriju, glej .env.example)
+
 services:
+
+  # ===== podatkovna baza =====
   baza:
     image: mariadb:11
     restart: unless-stopped
@@ -8,16 +14,19 @@ services:
       MARIADB_USER: ${DB_USER}
       MARIADB_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - baza_podatki:/var/lib/mysql
-      - ./db/init:/docker-entrypoint-initdb.d:ro
+      - baza_podatki:/var/lib/mysql                 # podatki ostanejo po ponovnem zagonu
+      - ./db/init:/docker-entrypoint-initdb.d:ro    # SQL skripte ob prvem zagonu (tabele + testni podatki)
     networks:
       - solanet
+    # aplikacija počaka, dokler baza ni res pripravljena
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       interval: 10s
       timeout: 5s
       retries: 5
+    # baza nima "ports", zato od zunaj ni dostopna, samo iz omrežja solanet
 
+  # ===== spletna aplikacija (Node.js + Express) =====
   aplikacija:
     build: ./app
     restart: unless-stopped
@@ -25,13 +34,15 @@ services:
       baza:
         condition: service_healthy
     environment:
-      PORT: 3000
-      DB_HOST: baza
+      DB_HOST: baza                         # ime storitve baze v tem omrežju
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
+      SESSION_SECRET: ${SESSION_SECRET}     # ključ za podpis piškotkov seje
+    volumes:
+      - datoteke:/app/datoteke              # gradiva in naloge (niso v mapi public)
     ports:
-      - "8097:3000"
+      - "8097:3000"                         # strežnik:vsebnik; Caddy posreduje HTTPS na 8097
     networks:
       - solanet
 
@@ -40,3 +51,4 @@ networks:
 
 volumes:
   baza_podatki:
+  datoteke:
