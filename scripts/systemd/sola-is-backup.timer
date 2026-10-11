@@ -1,0 +1,11 @@
+# Vsak dan ob 3:00 naredi varnostno kopijo baze
+[Unit]
+Description=sola-is: dnevna varnostna kopija baze
+
+[Timer]
+OnCalendar=*-*-* 03:00:00
+# če je bil strežnik ob 3:00 ugasnjen, kopijo naredi ob naslednjem zagonu
+Persistent=true
+
+[Install]
+WantedBy=timers.target
