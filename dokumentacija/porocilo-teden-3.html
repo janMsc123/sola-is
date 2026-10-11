@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="sl">
+<head>
+<meta charset="utf-8">
+<title>Šolski IS, tedensko poročilo 3</title>
+<link rel="stylesheet" href="porocilo.css">
+</head>
+<body>
+
+<div class="title">
+  <h1>Šolski informacijski sistem</h1>
+  <div class="sub">Tedensko poročilo, teden 3: funkcionalnost administratorja in osnove varnosti strežnika</div>
+</div>
+
+<table class="meta">
+  <tr><td>Predmet:</td><td>RPS, Računalniški produkti in storitve</td></tr>
+  <tr><td>Obdobje:</td><td>28. 9. do 4. 10. 2026</td></tr>
+  <tr><td>Člani:</td><td>Jan Marko (vzdrževalec IS), Črt Peterlin (razvijalec), Matevž Zvir (razvijalec)</td></tr>
+  <tr><td>Repozitorij:</td><td>https://github.com/janMsc123/sola-is</td></tr>
+  <tr><td>Aplikacija:</td><td>https://projekt.pajp.duckdns.org</td></tr>
+</table>
+
+<h2>Povzetek napredka</h2>
+<ul>
+  <li><b>Jan Marko (vzdrževalec IS):</b> ustvaril je vejo <code>develop</code> in v README zapisal pravila za veje in pull requeste. Preveril je obrnjeni posrednik Caddy (HTTPS s potrdilom Let's Encrypt, preusmeritev HTTP na HTTPS) in začel dokumentacijo namestitve <code>dokumentacija/namestitev.md</code>. Pregledal je pull request z administratorskim pogledom.</li>
+  <li><b>Črt Peterlin (razvijalec):</b> kodo je razdelil po plasteh (<code>db.js</code>, <code>routes/</code>, <code>views/</code>) in naredil CRUD za predmete, učitelje in učence z izbiro predmetov in iskanjem.</li>
+  <li><b>Matevž Zvir (razvijalec):</b> napisal je testne podatke <code>db/init/02-testni-podatki.sql</code> ter predloge in <code>style.css</code> za administratorja.</li>
+</ul>
+
+<h2>Testni podatki</h2>
+<table>
+  <tr><th style="width:30%">Podatki</th><th>Opis</th></tr>
+  <tr><td>1 administrator</td><td><code>admin@sola.si</code></td></tr>
+  <tr><td>10 predmetov</td><td>Matematika, Slovenščina, Angleščina, Fizika, Kemija, Biologija, Zgodovina, Geografija, Informatika, Športna vzgoja</td></tr>
+  <tr><td>20 učiteljev</td><td>vsak predmet imata 2 ali 3 učitelja, 5 učiteljev uči po 2 predmeta</td></tr>
+  <tr><td>100 učencev</td><td>vsak obiskuje 3 predmete</td></tr>
+</table>
+<p>Vsi testni uporabniki imajo geslo <code>geslo123</code>, ki je v bazi shranjeno zgoščeno (bcrypt).</p>
+
+<h2>Administratorski pogled</h2>
+<p>Administrator vnaša, ureja in briše predmete, učitelje in učence. Pri učitelju izbere predmete, ki jih poučuje (vsaj 1), pri učencu predmete, ki jih obiskuje (vsaj 2). Vnosi se preverijo (obvezna polja, unikaten naziv predmeta in email). Brisanje zahteva potrditev.</p>
+<figure class="keep">
+  <img src="slike/admin-predmeti.png">
+  <figcaption>Slika 1: seznam predmetov s številom učiteljev in učencev</figcaption>
+</figure>
+<figure class="keep">
+  <img src="slike/admin-ucitelj-uredi.png">
+  <figcaption>Slika 2: urejanje učitelja in izbira predmetov, ki jih poučuje</figcaption>
+</figure>
+<figure class="keep">
+  <img src="slike/admin-ucenci-iskanje.png">
+  <figcaption>Slika 3: iskanje med učenci (relacija učenec–predmet je vidna v stolpcu Predmeti)</figcaption>
+</figure>
+
+<h2>Organizacija kode</h2>
+<table>
+  <tr><th style="width:30%">Datoteka</th><th>Namen</th></tr>
+  <tr><td><code>app/server.js</code></td><td>nastavitve in zagon strežnika</td></tr>
+  <tr><td><code>app/db.js</code></td><td>povezava z bazo, ki jo uporabljajo vse poti</td></tr>
+  <tr><td><code>app/routes/admin.js</code></td><td>poti administratorja</td></tr>
+  <tr><td><code>app/views/</code></td><td>predloge EJS</td></tr>
+  <tr><td><code>.env</code></td><td>nastavitve in gesla, ločeno od kode</td></tr>
+</table>
+
+<h2>Obrnjeni posrednik in HTTPS</h2>
+<p>Caddy sprejme zahteve na vratih 80 in 443 ter jih posreduje aplikaciji na vratih 8097. Potrdilo Let's Encrypt pridobi in obnavlja sam, HTTP preusmeri na HTTPS (koda 308). Postopek je opisan v <code>dokumentacija/namestitev.md</code>.</p>
+
+<h2>Sklepi sestanka (4. 10.)</h2>
+<ul>
+  <li>Vsak dela na svoji veji in odpre pull request v <code>develop</code>; drug član ga pregleda.</li>
+  <li><code>develop</code> združimo v <code>main</code> ob koncu tedna, ko vse deluje.</li>
+  <li>V tednu 4: Črt prijava in pogled učenca, Matevž pogled učitelja, Jan pravice map in varnostne kopije.</li>
+</ul>
+
+<h2>Stanje zahtev</h2>
+<table>
+  <tr><th>Zahteva</th><th style="width:16%">Stanje</th></tr>
+  <tr><td>Vpis, urejanje in brisanje predmetov, učiteljev in učencev</td><td class="ok">opravljeno</td></tr>
+  <tr><td>Relacije med predmeti, učitelji in učenci vidne v vmesniku</td><td class="ok">opravljeno</td></tr>
+  <tr><td>Testni podatki (10 predmetov, 20 učiteljev, 100 učencev)</td><td class="ok">opravljeno</td></tr>
+  <tr><td>Obrnjeni posrednik in HTTPS</td><td class="ok">opravljeno</td></tr>
+  <tr><td>Veja <code>develop</code> in pravila za pull requeste</td><td class="ok">opravljeno</td></tr>
+  <tr><td>Dokumentacija namestitve</td><td class="part">začeta</td></tr>
+</table>
+
+<h2>Načrt za teden 4</h2>
+<p>Razvijalca bosta naredila prijavo z vlogami, pogled učitelja (gradiva, pregled nalog) in pogled učenca (profil, izbira predmetov, oddaja nalog). Vzdrževalec IS bo uredil pravice za naložene datoteke in pripravil skripto za varnostne kopije baze.</p>
+
+</body>
+</html>
