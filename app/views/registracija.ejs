@@ -1,0 +1,34 @@
+<!-- registracija.ejs — nov učenec si sam ustvari račun -->
+<%- include('glava', { naslov: 'Registracija' }) %>
+
+<div class="okvir ozek">
+  <h1>Registracija učenca</h1>
+
+  <% if (napaka) { %>
+    <p class="napaka"><%= napaka %></p>
+  <% } %>
+
+  <!-- podatki.xxx: če je bila napaka, ostanejo vpisani podatki v poljih -->
+  <form method="post" action="/registracija">
+    <label>Ime
+      <input name="ime" value="<%= podatki.ime || '' %>" required>
+    </label>
+    <label>Priimek
+      <input name="priimek" value="<%= podatki.priimek || '' %>" required>
+    </label>
+    <label>Email
+      <input type="email" name="email" value="<%= podatki.email || '' %>" required>
+    </label>
+    <label>Geslo (vsaj 6 znakov)
+      <input type="password" name="geslo" minlength="6" required>
+    </label>
+    <label>Ponovi geslo
+      <input type="password" name="geslo2" minlength="6" required>
+    </label>
+    <button type="submit">Ustvari račun</button>
+  </form>
+
+  <p>Že imate račun? <a href="/prijava">Prijava</a></p>
+</div>
+
+<%- include('noga') %>

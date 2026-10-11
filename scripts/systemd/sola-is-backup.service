@@ -1,0 +1,8 @@
+# Enkratni zagon varnostne kopije baze (sproži ga sola-is-backup.timer)
+[Unit]
+Description=sola-is: varnostna kopija baze
+
+[Service]
+Type=oneshot
+User=pajp
+ExecStart=/home/pajp/stacks/sola-is/scripts/backup.sh
