@@ -1,6 +1,6 @@
 {
   "name": "sola-is",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Šolski informacijski sistem — projekt zaključnega izpita",
   "main": "server.js",
@@ -9,7 +9,11 @@
     "dev": "node --watch server.js"
   },
   "dependencies": {
-    "express": "^4.19.2",
+    "bcryptjs": "^3.0.3",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "express-session": "^1.18.0",
+    "multer": "^2.0.0",
     "mysql2": "^3.11.0"
   }
 }
