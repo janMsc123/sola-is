@@ -1,5 +1,7 @@
 # Uporabniška navodila
 
+Avtor: Črt Peterlin
+
 Šolski IS je spletna aplikacija za delo na daljavo. Odpre se v brskalniku na naslovu
 **https://projekt.pajp.duckdns.org**, deluje tudi na telefonu.
 
