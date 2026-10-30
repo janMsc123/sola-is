@@ -1,5 +1,7 @@
 # Testiranje
 
+Testirali: Jan Marko, Črt Peterlin, Matevž Zvir · Zapisal: Črt Peterlin
+
 Testni primeri za vse tri poglede (teden 5). Vsak primer ima opis, pričakovani in dejanski rezultat ter status.
 
 | | |

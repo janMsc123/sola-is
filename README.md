@@ -6,11 +6,11 @@ Sistem ima tri poglede: **administrator**, **učitelj** in **učenec**.
 **Živa različica:** https://projekt.pajp.duckdns.org
 
 ## Skupina
-| Član | Vloga | GitHub | Veja |
-|---|---|---|---|
-| Jan Marko | vzdrževalec informacijskega sistema (IS) | janMsc123 | `pajp` |
-| Črt Peterlin | razvijalec aplikacije | CRTPET1 | `crt` |
-| Matevž Zvir | razvijalec aplikacije | Matevzz1 | `matevz` |
+| Član | Vloga | Delo | GitHub | Veja |
+|---|---|---|---|---|
+| Jan Marko | vzdrževalec informacijskega sistema (IS) | strežnik, domena, Docker, SQL, zaledje, GitHub | janMsc123 | `pajp` |
+| Črt Peterlin | razvijalec aplikacije | dokumentacija, poti (povezava vmesnika z zaledjem) | CRTPET1 | `crt` |
+| Matevž Zvir | razvijalec aplikacije | ER diagram, skice, spletni vmesnik (predloge, CSS) | Matevzz1 | `matevz` |
 
 Mentor: [DOPOLNI]
 
@@ -80,7 +80,7 @@ pajp / crt / matevz  ──PR──►  develop  ──PR──►  main  ──
 |---|---|
 | [Specifikacija sistema](dokumentacija/specifikacija.md) | zahteve za vse tri poglede, podatkovni model, seznam strani |
 | [ER diagram](dokumentacija/er-diagram.png) | 8 tabel s primarnimi in tujimi ključi |
-| Skice (wireframe) | `Wireframe_Solski_IS_RPS.pdf` (veja `Matevzz1-patch-1`) |
+| [Skice (wireframe)](dokumentacija/skice-wireframe.pdf) | 13 zaslonov za vse tri poglede (Matevž Zvir) |
 | [Namestitev in konfiguracija strežnika](dokumentacija/namestitev.md) | arhitektura, namestitev, HTTPS, varnost, varnostne kopije, vzdrževanje |
 | [Diagram arhitekture](dokumentacija/arhitektura.png) | pot zahteve od brskalnika do baze |
 | [Uporabniška navodila](dokumentacija/uporabniska-navodila.md) | za administratorja, učitelja in učenca |
