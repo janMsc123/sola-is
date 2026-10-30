@@ -110,6 +110,7 @@ const VRSTE = {
     vloga: 'ucitelj',             // vloga v tabeli uporabniki
     naslov: 'Učitelji',
     ednina: 'učitelj',
+    tozilnik: 'učitelja',         // za naslov "Uredi učitelja"
     najmanjPredmetov: 1           // učitelj mora učiti vsaj 1 predmet
   },
   ucenci: {
@@ -119,6 +120,7 @@ const VRSTE = {
     vloga: 'ucenec',
     naslov: 'Učenci',
     ednina: 'učenec',
+    tozilnik: 'učenca',
     najmanjPredmetov: 2           // učenec mora obiskovati več kot en predmet
   }
 };
