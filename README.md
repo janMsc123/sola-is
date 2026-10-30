@@ -1,6 +1,6 @@
 # Šolski IS
 
-Spletna aplikacija za podporo šolskemu delu na daljavo — projekt zaključnega izpita pri predmetu RPS.
+Spletna aplikacija za podporo šolskemu delu na daljavo, projekt zaključnega izpita pri predmetu RPS.
 Sistem ima tri poglede: **administrator**, **učitelj** in **učenec**.
 
 **Živa različica:** https://projekt.pajp.duckdns.org
@@ -67,7 +67,7 @@ pajp / crt / matevz  ──PR──►  develop  ──PR──►  main  ──
 2. **Ko je naloga končana**, odpre pull request v `develop`. V opisu napiše, kaj je naredil in kako
    se to preizkusi.
 3. **Pregled kode:** PR pregleda vsaj en drug član skupine. Ko je vse v redu, ga združi.
-4. **`main` je zaščiten** — vanj ni mogoče pushati direktno, samo prek pull requesta iz `develop`.
+4. **`main` je zaščiten**: vanj ni mogoče pushati direktno, samo prek pull requesta iz `develop`.
    To naredimo ob koncu tedna, ko vse deluje.
 5. **Vsak push v `main` gre v živo**: strežnik vsako minuto preveri `main` in aplikacijo
    samodejno posodobi (glej [scripts/systemd/README.md](scripts/systemd/README.md)).
@@ -76,10 +76,22 @@ pajp / crt / matevz  ──PR──►  develop  ──PR──►  main  ──
 7. **Napake** zapisujemo kot GitHub Issues.
 
 ## Dokumentacija
-- [Specifikacija sistema](dokumentacija/specifikacija.md)
-- [Namestitev in konfiguracija strežnika](dokumentacija/namestitev.md)
-- [Časovni načrt](dokumentacija/casovni-nacrt.md)
-- [Navodila projekta (RPS)](dokumentacija/navodila-RPS.pdf)
-- ER diagram: [dokumentacija/er-diagram.png](dokumentacija/er-diagram.png)
-- Tedenska poročila: `dokumentacija/porocilo-teden-*.pdf`
-- Dnevna poročila: [porocila/](porocila/)
+| Dokument | Vsebina |
+|---|---|
+| [Specifikacija sistema](dokumentacija/specifikacija.md) | zahteve za vse tri poglede, podatkovni model, seznam strani |
+| [ER diagram](dokumentacija/er-diagram.png) | 8 tabel s primarnimi in tujimi ključi |
+| Skice (wireframe) | `Wireframe_Solski_IS_RPS.pdf` (veja `Matevzz1-patch-1`) |
+| [Namestitev in konfiguracija strežnika](dokumentacija/namestitev.md) | arhitektura, namestitev, HTTPS, varnost, varnostne kopije, vzdrževanje |
+| [Diagram arhitekture](dokumentacija/arhitektura.png) | pot zahteve od brskalnika do baze |
+| [Uporabniška navodila](dokumentacija/uporabniska-navodila.md) | za administratorja, učitelja in učenca |
+| [Testiranje](dokumentacija/testiranje.md) | 59 testnih primerov z rezultati |
+| [Napake](https://github.com/janMsc123/sola-is/issues) | GitHub Issues |
+| [Časovni načrt](dokumentacija/casovni-nacrt.md) | 6 tednov, kdo dela kaj |
+| [Navodila projekta (RPS)](dokumentacija/navodila-RPS.pdf) | uradna navodila |
+| Tedenska poročila | `dokumentacija/porocilo-teden-1.pdf` do `porocilo-teden-5.pdf` |
+| [Zaključno poročilo](dokumentacija/porocilo-zakljucno.pdf) | potek dela, izzivi, delitev dela |
+| [Dnevna poročila](porocila/) | vsak član v svoji mapi |
+
+## Različice
+Končna različica je označena z oznako `v1.0`
+([Releases](https://github.com/janMsc123/sola-is/releases)).
