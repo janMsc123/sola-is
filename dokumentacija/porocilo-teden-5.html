@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="sl">
+<head>
+<meta charset="utf-8">
+<title>Šolski IS, tedensko poročilo 5</title>
+<link rel="stylesheet" href="porocilo.css">
+<style>figure img { width: 62%; } .arh img { width: 100%; }</style>
+</head>
+<body>
+
+<div class="title">
+  <h1>Šolski informacijski sistem</h1>
+  <div class="sub">Tedensko poročilo, teden 5: testiranje, oblikovanje in dokumentacija</div>
+</div>
+
+<table class="meta">
+  <tr><td>Predmet:</td><td>RPS, Računalniški produkti in storitve</td></tr>
+  <tr><td>Obdobje:</td><td>12. 10. do 30. 10. 2026</td></tr>
+  <tr><td>Člani:</td><td>Jan Marko (vzdrževalec IS), Črt Peterlin (razvijalec), Matevž Zvir (razvijalec)</td></tr>
+  <tr><td>Repozitorij:</td><td>https://github.com/janMsc123/sola-is</td></tr>
+  <tr><td>Aplikacija:</td><td>https://projekt.pajp.duckdns.org</td></tr>
+</table>
+
+<h2>Povzetek napredka</h2>
+<ul>
+  <li><b>Vsi:</b> po seznamu 59 testnih primerov smo preizkusili vse tri poglede, varnost in prikaz na telefonu. Najdene napake smo zapisali v GitHub Issues.</li>
+  <li><b>Jan Marko (vzdrževalec IS):</b> za testiranje je postavil ločeno kopijo aplikacije s svežimi testnimi podatki, da testi ne spreminjajo podatkov na javni domeni. Dokončal je tehnično dokumentacijo (arhitektura, zgradba aplikacije, vzdrževanje, odpravljanje težav) in narisal diagram arhitekture.</li>
+  <li><b>Črt Peterlin (razvijalec):</b> napisal je uporabniška navodila za administratorja, učitelja in učenca.</li>
+  <li><b>Matevž Zvir (razvijalec):</b> dokončal je skice (wireframe) za vse tri poglede.</li>
+</ul>
+
+<h2>Testiranje</h2>
+<p>Vsak testni primer ima opis, pričakovani rezultat, dejanski rezultat in status. Celoten seznam je v <code>dokumentacija/testiranje.md</code>.</p>
+<table>
+  <tr><th>Področje</th><th style="width:14%">Testov</th><th style="width:14%">Uspešnih</th></tr>
+  <tr><td>Skupno (prijava, 404, dostop brez prijave)</td><td>7</td><td>7</td></tr>
+  <tr><td>Administrator (CRUD, validacija, iskanje)</td><td>18</td><td>17</td></tr>
+  <tr><td>Učitelj (gradiva, naloge, pravice)</td><td>10</td><td>10</td></tr>
+  <tr><td>Učenec (registracija, predmeti, oddaja, profil)</td><td>20</td><td>18</td></tr>
+  <tr><td>Varnost (gesla, izbrisan uporabnik)</td><td>2</td><td>1</td></tr>
+  <tr><td>Oblikovanje (telefon)</td><td>2</td><td>2</td></tr>
+  <tr><td><b>Skupaj</b></td><td><b>59</b></td><td><b>55</b></td></tr>
+</table>
+
+<figure class="keep">
+  <img src="slike/testi/T41-potrditev.png">
+  <figcaption>Slika 1: test T41, vprašanje pred ponovno oddajo naloge</figcaption>
+</figure>
+
+<h2>Najdene napake</h2>
+<table>
+  <tr><th style="width:9%">Issue</th><th style="width:8%">Test</th><th>Napaka</th><th style="width:14%">Stanje</th></tr>
+  <tr><td>#4</td><td>T45</td><td>Oddaja naloge z zelo dolgim naslovom (nad 230 znakov) vrne napako 500, ker je ime datoteke predolgo.</td><td class="part">odprta</td></tr>
+  <tr><td>#5</td><td>T55</td><td>Uporabnik, ki ga administrator izbriše med prijavo, dobi napako 500 namesto odjave.</td><td class="part">odprta</td></tr>
+  <tr><td>#6</td><td>T56</td><td>Po brisanju predmeta, učitelja ali učenca datoteke ostanejo na disku.</td><td class="part">odprta</td></tr>
+  <tr><td>#7</td><td>T52</td><td>Ponovna oddaja po spremembi imena v profilu ne vpraša za potrditev.</td><td class="part">odprta</td></tr>
+</table>
+<p>Vse najdene napake so robni primeri. Nobena ne preprečuje običajne uporabe; vse zahteve iz navodil delujejo.</p>
+
+<div class="keep">
+<h2>Diagram arhitekture</h2>
+<figure class="arh">
+  <img src="arhitektura.png">
+  <figcaption>Slika 2: pot zahteve od brskalnika do baze, volumni ter samodejna namestitev in varnostne kopije</figcaption>
+</figure>
+</div>
+
+<h2>Dokumentacija</h2>
+<table>
+  <tr><th style="width:36%">Dokument</th><th>Vsebina</th></tr>
+  <tr><td><code>namestitev.md</code></td><td>arhitektura, namestitev, <code>.env</code>, vsebniki, Caddy in HTTPS, varnost, auto-deploy, varnostne kopije, zgradba aplikacije, vzdrževanje, odpravljanje težav</td></tr>
+  <tr><td><code>uporabniska-navodila.md</code></td><td>prijava ter navodila za administratorja, učitelja in učenca z zaslonskimi slikami</td></tr>
+  <tr><td><code>testiranje.md</code></td><td>59 testnih primerov z rezultati in zaslonskimi slikami</td></tr>
+  <tr><td><code>arhitektura.png</code></td><td>diagram arhitekture</td></tr>
+</table>
+
+<h2>Načrt za teden 6</h2>
+<p>Odprava napak #4 do #7, končno testiranje na javni domeni, pregled kode in odstranitev nepotrebnih delov, predstavitev projekta, zaključno poročilo ter oznaka končne različice (<code>v1.0</code>).</p>
+
+</body>
+</html>
