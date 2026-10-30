@@ -1,8 +1,8 @@
 # Časovni načrt — 6 tednov
 
 ## Teden 1 — Analiza, načrtovanje, priprava okolja
-- **Pajp (IS):** repo na GitHubu, Docker okolje, docker-compose.yml
-- **Nal + Mitja:** specifikacija, ER diagram (≥4 tabele), wireframi (3 pogledi)
+- **Jan (IS):** repo na GitHubu, Docker okolje, docker-compose.yml
+- **Črt + Matevž:** specifikacija, ER diagram (≥4 tabele), wireframi (3 pogledi)
 - **Vsi:** uvodni sestanek
 
 ## Teden 2 — Infrastruktura + PB

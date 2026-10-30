@@ -2,6 +2,24 @@
 
 Avtor: Jan Marko (vzdrževalec IS)
 
+Ta dokument opisuje, kako je sistem zgrajen, kako ga namestiš na nov strežnik in kako ga vzdržuješ.
+Za branje ne potrebuješ poznati projekta, potrebuješ pa osnove Linuxa in Dockerja.
+
+## 0. Arhitektura sistema
+![Arhitektura sistema](arhitektura.png)
+
+Pot ene zahteve:
+1. Brskalnik vpraša DuckDNS za IP naslov domene `projekt.pajp.duckdns.org`.
+2. Zahteva HTTPS pride do domačega usmerjevalnika, ki vrata 80 in 443 posreduje na strežnik.
+3. Caddy na strežniku preveri potrdilo (HTTPS) in zahtevo posreduje aplikaciji na vrata 8097.
+4. Aplikacija (Node.js + Express) v vsebniku prebere ali zapiše podatke v bazo MariaDB, ki je v
+   istem Docker omrežju `solanet` in od zunaj ni dosegljiva.
+5. Naložene datoteke (gradiva, naloge) so v Docker volumnu `datoteke`, podatki baze v volumnu
+   `baza_podatki`. Oba ostaneta, tudi če vsebnike izbrišemo in ponovno zgradimo.
+
+Na strežniku tečeta še dva systemd časovnika: `sola-is-deploy.timer` (samodejna namestitev nove
+različice z GitHuba) in `sola-is-backup.timer` (dnevna varnostna kopija baze).
+
 ## 1. Strežnik
 | | |
 |---|---|
@@ -103,3 +121,44 @@ Ročna kopija: `./scripts/backup.sh`
 gunzip -c varnostne-kopije/sola_is-2026-10-11_0300.sql.gz \
   | docker compose exec -T baza mariadb -uroot -p"$DB_ROOT_GESLO" sola_is
 ```
+
+## 9. Zgradba aplikacije
+| Datoteka / mapa | Kaj vsebuje |
+|---|---|
+| `app/server.js` | vstopna točka: nastavitve Expressa, seje, poti, strani za napake |
+| `app/db.js` | povezava z bazo (bazen povezav `mysql2`) |
+| `app/preveri.js` | preverjanje pravic: `samo('administrator')` in podobno |
+| `app/datoteke.js` | nastavitve za nalaganje datotek (multer, največ 20 MB) |
+| `app/routes/prijava.js` | prijava, registracija učenca, odjava |
+| `app/routes/admin.js` | CRUD predmetov, učiteljev in učencev ter povezave s predmeti |
+| `app/routes/ucitelj.js` | gradiva in pregled oddanih nalog |
+| `app/routes/ucenec.js` | profil, izbira predmetov, gradiva, oddaja nalog |
+| `app/views/` | HTML predloge (EJS), ena mapa za vsak pogled |
+| `db/init/` | SQL za tabele in testne podatke (izvede se ob prvem zagonu) |
+| `scripts/` | auto-deploy, varnostna kopija, systemd enote |
+
+Podatkovni model (8 tabel) je opisan v [specifikacija.md](specifikacija.md), slika je v
+[er-diagram.png](er-diagram.png).
+
+## 10. Vsakdanje vzdrževanje
+| Opravilo | Ukaz (v mapi projekta) |
+|---|---|
+| stanje vsebnikov | `docker compose ps` |
+| dnevnik aplikacije (napake) | `docker compose logs -f aplikacija` |
+| ponovni zagon | `docker compose restart aplikacija` |
+| ročna posodobitev | `git pull && docker compose up -d --build` |
+| dnevnik samodejne namestitve | `cat deploy.log` |
+| stanje časovnikov | `systemctl list-timers 'sola-is-*'` |
+| ročna varnostna kopija | `./scripts/backup.sh` |
+| konzola baze | `docker compose exec baza mariadb -u"$DB_USER" -p sola_is` |
+
+## 11. Odpravljanje težav
+| Težava | Kaj preveriti |
+|---|---|
+| Stran se ne odpre | `docker compose ps`: ali oba vsebnika tečeta? `curl localhost:8097/api/health` na strežniku |
+| `/api/health` vrne napako baze | `docker compose logs baza`; ali so gesla v `.env` enaka kot ob prvem zagonu baze |
+| Lokalno deluje, na domeni ne | ali Caddy teče, ali domena kaže na pravi IP (`nslookup projekt.pajp.duckdns.org`) |
+| "Prišlo je do napake na strežniku." | podrobnosti so v `docker compose logs aplikacija` |
+| Nova različica se ni namestila | `deploy.log` in `systemctl status sola-is-deploy.timer` |
+| Testni podatki se niso naložili | skripte v `db/init/` se izvedejo samo na prazni bazi (glej poglavje 2) |
+

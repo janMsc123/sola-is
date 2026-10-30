@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="sl">
+<head>
+<meta charset="utf-8">
+<title>Šolski IS, zaključno poročilo</title>
+<link rel="stylesheet" href="porocilo.css">
+<style>figure img { width: 100%; }</style>
+</head>
+<body>
+
+<div class="title">
+  <h1>Šolski informacijski sistem</h1>
+  <div class="sub">Zaključno poročilo projekta (teden 6)</div>
+</div>
+
+<table class="meta">
+  <tr><td>Predmet:</td><td>RPS, Računalniški produkti in storitve</td></tr>
+  <tr><td>Obdobje:</td><td>14. 9. do 30. 10. 2026</td></tr>
+  <tr><td>Člani:</td><td>Jan Marko (vzdrževalec IS), Črt Peterlin (razvijalec), Matevž Zvir (razvijalec)</td></tr>
+  <tr><td>Repozitorij:</td><td>https://github.com/janMsc123/sola-is</td></tr>
+  <tr><td>Aplikacija:</td><td>https://projekt.pajp.duckdns.org</td></tr>
+</table>
+
+<h2>O projektu</h2>
+<p>Izdelali smo spletno aplikacijo za podporo šolskemu delu na daljavo s tremi pogledi: administrator vpisuje predmete, učitelje in učence ter jih povezuje, učitelj nalaga gradiva in pregleduje oddane naloge, učenec se registrira, izbira predmete, prenaša gradiva in oddaja naloge. Aplikacija teče v vsebnikih Docker na strežniku z Linuxom in je dostopna na javni domeni prek HTTPS.</p>
+<table>
+  <tr><th style="width:30%">Področje</th><th>Izbira</th></tr>
+  <tr><td>Aplikacija</td><td>Node.js 20, Express 5, predloge EJS</td></tr>
+  <tr><td>Podatkovna baza</td><td>MariaDB 11, 8 tabel</td></tr>
+  <tr><td>Vsebniki</td><td>Docker, Docker Compose (baza in aplikacija v ločenih vsebnikih)</td></tr>
+  <tr><td>Obrnjeni posrednik, HTTPS</td><td>Caddy, potrdilo Let's Encrypt, domena DuckDNS</td></tr>
+  <tr><td>Gesla</td><td>bcrypt (knjižnica bcryptjs)</td></tr>
+  <tr><td>Nadzor različic</td><td>Git, GitHub (veje, pull requesti, Issues)</td></tr>
+</table>
+
+<h2>Potek dela po tednih</h2>
+<table>
+  <tr><th style="width:24%">Teden</th><th>Kaj smo naredili</th></tr>
+  <tr><td>1. Analiza, načrtovanje (14. 9. do 20. 9.)</td><td>Repozitorij in struktura map, Docker okolje, specifikacija za vse tri poglede, ER diagram z 8 tabelami, izbira tehnologij, samodejna namestitev z GitHuba.</td></tr>
+  <tr><td>2. Infrastruktura, baza (21. 9. do 28. 9.)</td><td>Dokončan <code>docker-compose.yml</code> in <code>.env</code>, veja <code>develop</code>, SQL skripta s tabelami, povezava aplikacije z bazo.</td></tr>
+  <tr><td>3. Administrator, varnost strežnika (28. 9. do 4. 10.)</td><td>Testni podatki (10 predmetov, 20 učiteljev, 100 učencev), CRUD za predmete, učitelje in učence s povezavami, obrnjeni posrednik in HTTPS, pravila za veje in pull requeste.</td></tr>
+  <tr><td>4. Prijava, učitelj, učenec (5. 10. do 11. 10.)</td><td>Prijava, registracija in pravice po vlogah, pogleda učitelja in učenca, oddaja nalog s pravilnim imenom in potrditvijo, pravice map z datotekami, dnevne varnostne kopije baze.</td></tr>
+  <tr><td>5. Testiranje, dokumentacija (12. 10. do 30. 10.)</td><td>Skice (wireframe) za vse tri poglede, 59 testnih primerov, 4 najdene napake v GitHub Issues, tehnična dokumentacija z diagramom arhitekture, uporabniška navodila.</td></tr>
+  <tr><td>6. Zaključek</td><td>Združitev vseh vej v <code>main</code>, zaščita veje <code>main</code>, zaključno poročilo, oznaka končne različice <code>v1.0</code>.</td></tr>
+</table>
+
+<h2>Glavni izzivi in rešitve</h2>
+<table>
+  <tr><th style="width:32%">Izziv</th><th>Rešitev</th></tr>
+  <tr><td>Ponovna oddaja naloge sme povoziti prejšnjo šele po potrditvi učenca.</td><td>Nova datoteka najprej ostane v začasni mapi, zapis v tabeli <code>naloge</code> ima <code>potrjeno = FALSE</code>. Šele ko učenec klikne "Da, zamenjaj", jo premaknemo čez staro. Učitelj vidi samo potrjene oddaje.</td></tr>
+  <tr><td>Šumniki v imenih naloženih datotek (č, š, ž) se pokvarijo.</td><td>Knjižnica multer ime prebere kot latin1, brskalnik pa ga pošlje v UTF-8. Ime pretvorimo nazaj s funkcijo <code>popraviIme</code>.</td></tr>
+  <tr><td>Naložene datoteke ne smejo biti javno dostopne.</td><td>Shranjene so v ločenem Docker volumnu izven mape <code>public</code>. Prenos gre samo prek poti, ki preveri, ali uporabnik poučuje oziroma obiskuje predmet.</td></tr>
+  <tr><td>Caddy doseže aplikacijo prek IP naslova strežnika, ne prek <code>localhost</code>.</td><td>Aplikacija posluša na <code>0.0.0.0</code>, torej na vseh omrežnih vmesnikih vsebnika.</td></tr>
+  <tr><td>Aplikacija se ne sme zagnati, preden je baza pripravljena.</td><td>Healthcheck baze in <code>depends_on: condition: service_healthy</code>.</td></tr>
+  <tr><td>Ročno nameščanje novih različic je bilo zamudno.</td><td>Systemd časovnik vsako minuto preveri vejo <code>main</code> in ob novem commitu sam ponovno zgradi vsebnike.</td></tr>
+  <tr><td>Testi ne smejo spreminjati podatkov na javni domeni.</td><td>Za testiranje smo zagnali ločeno kopijo aplikacije z lastno bazo.</td></tr>
+</table>
+
+<h2>Delitev dela</h2>
+<table>
+  <tr><th style="width:24%">Član</th><th>Delo</th></tr>
+  <tr><td>Jan Marko<br>vzdrževalec IS</td><td>strežnik, javna domena (DuckDNS), Caddy in HTTPS, Docker in <code>docker-compose.yml</code>, <code>.env</code>, SQL (shema in testni podatki), zaledje aplikacije (<code>server.js</code>, <code>db.js</code>, <code>preveri.js</code>, <code>datoteke.js</code>), GitHub (repozitorij, veje, pravila za pull requeste, Issues, zaščita <code>main</code>), samodejna namestitev, varnostne kopije, tehnična dokumentacija in diagram arhitekture, testno okolje</td></tr>
+  <tr><td>Črt Peterlin<br>razvijalec</td><td>dokumentacija (specifikacija, uporabniška navodila, testni primeri, tedenska in zaključno poročilo), povezava Matevževih predlog z Janovim zaledjem: poti v <code>routes/</code> za prijavo, administratorja, učitelja in učenca</td></tr>
+  <tr><td>Matevž Zvir<br>razvijalec</td><td>ER diagram, skice (wireframe), spletni vmesnik: predloge EJS za vse strani, <code>style.css</code>, odzivno oblikovanje za telefon, zaslonske slike</td></tr>
+  <tr><td>Vsi</td><td>tedenski sestanki (ponedeljek v šoli, nedelja na Discordu), testiranje, dnevna in tedenska poročila</td></tr>
+</table>
+<p>Večino dela smo opravili skupaj, v šoli ali na sestankih na Discordu. Kodo je v repozitorij največkrat shranil vzdrževalec IS s strežnika; Črt in Matevž sta pri commitih s svojim delom navedena kot soavtorja (<code>Co-authored-by</code>), zato GitHub njihovo delo prikaže tudi na njunih profilih.</p>
+
+<h2>Izpolnjevanje zahtev</h2>
+<table>
+  <tr><th>Zahteva</th><th style="width:16%">Stanje</th></tr>
+  <tr><td>Spletna aplikacija z bazo, Git in GitHub</td><td class="ok">opravljeno</td></tr>
+  <tr><td>Aplikacija in baza v ločenih vsebnikih Docker na Linuxu</td><td class="ok">opravljeno</td></tr>
+  <tr><td>Javna domena s HTTPS</td><td class="ok">opravljeno</td></tr>
+  <tr><td>ER diagram z vsaj 4 tabelami (imamo 8)</td><td class="ok">opravljeno</td></tr>
+  <tr><td>Vsaj 5 podstrani (imamo 15)</td><td class="ok">opravljeno</td></tr>
+  <tr><td>Prijava z vsaj dvema vrstama uporabnikov (imamo 3) in avtorizacija</td><td class="ok">opravljeno</td></tr>
+  <tr><td>Gesla samo zgoščena</td><td class="ok">opravljeno</td></tr>
+  <tr><td>Administrator: CRUD predmetov (10), učiteljev (20), učencev (100) in povezave</td><td class="ok">opravljeno</td></tr>
+  <tr><td>Učitelj: gradiva samo za svoje predmete, pregled oddanih nalog</td><td class="ok">opravljeno</td></tr>
+  <tr><td>Učenec: registracija, profil, izbira predmetov, gradiva, oddaja nalog "Priimek Ime - Naslov naloge"</td><td class="ok">opravljeno</td></tr>
+  <tr><td>Ponovna oddaja povozi prejšnjo šele po potrditvi</td><td class="ok">opravljeno</td></tr>
+  <tr><td>Odzivno oblikovanje</td><td class="ok">opravljeno</td></tr>
+  <tr><td>Varnostne kopije baze</td><td class="ok">opravljeno</td></tr>
+  <tr><td>Testni primeri, napake v GitHub Issues</td><td class="ok">opravljeno</td></tr>
+  <tr><td>Tehnična dokumentacija, uporabniška navodila</td><td class="ok">opravljeno</td></tr>
+  <tr><td>Skice (wireframe) za vse tri poglede</td><td class="ok">opravljeno</td></tr>
+  <tr><td>Dnevna in tedenska poročila</td><td class="ok">opravljeno</td></tr>
+  <tr><td>Oznaka končne različice (tag / release)</td><td class="ok">v1.0</td></tr>
+</table>
+
+<h2>Povezave</h2>
+<ul>
+  <li>Repozitorij: <b>https://github.com/janMsc123/sola-is</b></li>
+  <li>Delujoča aplikacija: <b>https://projekt.pajp.duckdns.org</b> (testni račun: <code>admin@sola.si</code>, geslo <code>geslo123</code>)</li>
+  <li>Končna različica: https://github.com/janMsc123/sola-is/releases/tag/v1.0</li>
+</ul>
+
+</body>
+</html>

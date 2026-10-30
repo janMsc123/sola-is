@@ -1,6 +1,6 @@
 # Specifikacija sistema — Šolski IS
 
-Avtorja: Črt Peterlin, Matevž Zvir · Pregledal: Jan Marko
+Avtor: Črt Peterlin · ER diagram: Matevž Zvir · Pregledal: Jan Marko
 Predmet: RPS — Računalniški produkti in storitve · Mentor: [DOPOLNI]
 
 ## 1. Namen
