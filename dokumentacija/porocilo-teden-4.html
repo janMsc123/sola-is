@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="sl">
+<head>
+<meta charset="utf-8">
+<title>Šolski IS, tedensko poročilo 4</title>
+<link rel="stylesheet" href="porocilo.css">
+<style>figure img { width: 62%; }</style>
+</head>
+<body>
+
+<div class="title">
+  <h1>Šolski informacijski sistem</h1>
+  <div class="sub">Tedensko poročilo, teden 4: prijava uporabnikov ter pogleda učitelja in učenca</div>
+</div>
+
+<table class="meta">
+  <tr><td>Predmet:</td><td>RPS, Računalniški produkti in storitve</td></tr>
+  <tr><td>Obdobje:</td><td>5. 10. do 11. 10. 2026</td></tr>
+  <tr><td>Člani:</td><td>Jan Marko (vzdrževalec IS), Črt Peterlin (razvijalec), Matevž Zvir (razvijalec)</td></tr>
+  <tr><td>Repozitorij:</td><td>https://github.com/janMsc123/sola-is</td></tr>
+  <tr><td>Aplikacija:</td><td>https://projekt.pajp.duckdns.org</td></tr>
+</table>
+
+<h2>Povzetek napredka</h2>
+<ul>
+  <li><b>Jan Marko (vzdrževalec IS):</b> napisal je preverjanje pravic po vlogah (<code>preveri.js</code>) in nalaganje datotek (<code>datoteke.js</code>), uredil je pravice za naložene datoteke, dodal ključ za seje, napisal skripto za dnevne varnostne kopije baze in novo različico prek pull requesta namestil na javno domeno.</li>
+  <li><b>Črt Peterlin (razvijalec):</b> naredil je poti za prijavo, registracijo in odjavo ter za pogleda učitelja in učenca (gradiva, oddaja nalog s potrditvijo), ki Matevževe predloge povežejo z bazo. Napisal je tedenski poročili 3 in 4.</li>
+  <li><b>Matevž Zvir (razvijalec):</b> naredil je predloge za prijavo, registracijo, učitelja in učenca, odzivno oblikovanje za telefon in zaslonske slike ter preizkusil pravice vseh treh pogledov.</li>
+</ul>
+
+<h2>Prijava in pravice</h2>
+<p>Vsi trije pogledi imajo skupno prijavo. Po prijavi strežnik v sejo zapiše vlogo uporabnika in ga preusmeri na njegovo stran. Vsaka pot preveri vlogo na strežniku (<code>preveri.js</code>); učitelj in učenec dodatno vidita samo predmete, ki jih poučujeta oziroma obiskujeta. Kdor odpre stran, ki mu ne pripada, dobi napako 403.</p>
+
+<h2>Pogled učitelja</h2>
+<figure class="keep">
+  <img src="slike/ucitelj-predmet.png">
+  <figcaption>Slika 1: učitelj pri svojem predmetu naloži ali izbriše gradivo in pregleda oddane naloge</figcaption>
+</figure>
+
+<h2>Pogled učenca</h2>
+<p>Učenec se registrira, ureja profil, izbere predmete (vsaj 2), prenese gradiva in odda naloge. Datoteka se shrani kot <code>Priimek Ime - Naslov naloge.končnica</code>. Če naloga z istim imenom že obstaja, se prejšnja povozi šele, ko učenec to potrdi.</p>
+<figure class="keep">
+  <img src="slike/ucenec-predmet.png">
+  <figcaption>Slika 2: gradiva predmeta in oddaja naloge</figcaption>
+</figure>
+<figure class="keep">
+  <img src="slike/ucenec-potrdi.png">
+  <figcaption>Slika 3: potrditev pred ponovno oddajo naloge</figcaption>
+</figure>
+
+<h2>Varnostne odločitve</h2>
+<table>
+  <tr><th style="width:28%">Področje</th><th>Odločitev</th></tr>
+  <tr><td>Gesla</td><td>Zgoščena z algoritmom bcrypt (knjižnica <code>bcryptjs</code>, 10 krogov). V bazi ni nobenega gesla v čistem besedilu.</td></tr>
+  <tr><td>Seje</td><td>Piškotek seje je podpisan s ključem <code>SESSION_SECRET</code> iz <code>.env</code> in poteče po 2 urah.</td></tr>
+  <tr><td>Avtorizacija</td><td>Pravice se preverjajo na strežniku pri vsaki zahtevi, ne samo s skrivanjem povezav v meniju.</td></tr>
+  <tr><td>Naložene datoteke</td><td>Shranjene izven mape <code>public</code> v ločenem Docker volumnu, mapa ima pravice <code>750</code>. Prenos je mogoč samo prek poti, ki preveri pravico do predmeta.</td></tr>
+  <tr><td>Vsebnik</td><td>Aplikacija teče kot navaden uporabnik <code>node</code>, ne kot root.</td></tr>
+  <tr><td>Baza</td><td>Nima odprtih vrat navzven; gesla so v <code>.env</code>, ki ni v repozitoriju.</td></tr>
+  <tr><td>SQL</td><td>Vse poizvedbe uporabljajo parametre (<code>?</code>), zato vnos uporabnika ne more spremeniti poizvedbe.</td></tr>
+  <tr><td>Varnostne kopije</td><td>Skripta <code>scripts/backup.sh</code> vsak dan ob 3:00 izvozi bazo; kopije se hranijo 14 dni.</td></tr>
+</table>
+
+<h2>Javna domena</h2>
+<p>Aplikacija je dostopna na <b>https://projekt.pajp.duckdns.org</b>. Zahteva na <code>http://</code> se preusmeri na <code>https://</code>, potrdilo je od Let's Encrypt. Klic <code>/api/health</code> vrne:</p>
+<pre>{"status":"ok","db":true}</pre>
+
+<h2>Sklepi sestanka (11. 10.)</h2>
+<ul>
+  <li>Vse funkcionalnosti iz navodil so narejene in nameščene na javno domeno.</li>
+  <li>V tednu 5 pišemo testne primere, napake beležimo v GitHub Issues.</li>
+  <li>Matevž dokonča skice (wireframe), Jan tehnično dokumentacijo in diagram arhitekture, Črt uporabniška navodila.</li>
+</ul>
+
+<h2>Stanje zahtev</h2>
+<table>
+  <tr><th>Zahteva</th><th style="width:16%">Stanje</th></tr>
+  <tr><td>Prijava z vsaj dvema vrstama uporabnikov in avtorizacija</td><td class="ok">opravljeno</td></tr>
+  <tr><td>Gesla shranjena samo zgoščena</td><td class="ok">opravljeno</td></tr>
+  <tr><td>Učitelj vidi in ureja samo gradiva svojih predmetov</td><td class="ok">opravljeno</td></tr>
+  <tr><td>Ponovna oddaja povozi prejšnjo šele po potrditvi učenca</td><td class="ok">opravljeno</td></tr>
+  <tr><td>Pravice dostopa do map z datotekami</td><td class="ok">opravljeno</td></tr>
+  <tr><td>Skripta za varnostne kopije baze</td><td class="ok">opravljeno</td></tr>
+  <tr><td>Aplikacija na javni domeni</td><td class="ok">opravljeno</td></tr>
+</table>
+
+<h2>Načrt za teden 5</h2>
+<p>Testni primeri za vse tri poglede in GitHub Issues za najdene napake. Vzdrževalec IS pripravi tehnično dokumentacijo in diagram arhitekture, razvijalca uporabniška navodila in skice.</p>
+
+</body>
+</html>
