@@ -1,7 +1,7 @@
 # Specifikacija sistema — Šolski IS
 
 Avtor: Črt Peterlin · ER diagram: Matevž Zvir · Pregledal: Jan Marko
-Predmet: RPS — Računalniški produkti in storitve · Mentor: [DOPOLNI]
+Predmet: RPS — Računalniški produkti in storitve · Mentor: Andraž Pušnik
 
 ## 1. Namen
 Spletna aplikacija podpira šolsko delo na daljavo. Administrator vodi predmete, učitelje in učence,

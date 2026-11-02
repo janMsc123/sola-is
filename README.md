@@ -12,7 +12,7 @@ Sistem ima tri poglede: **administrator**, **učitelj** in **učenec**.
 | Črt Peterlin | razvijalec aplikacije | dokumentacija, poti (povezava vmesnika z zaledjem) | CRTPET1 | `crt` |
 | Matevž Zvir | razvijalec aplikacije | ER diagram, skice, spletni vmesnik (predloge, CSS) | Matevzz1 | `matevz` |
 
-Mentor: [DOPOLNI]
+Mentor: Andraž Pušnik
 
 ## Tehnologije
 | Področje | Izbira |
