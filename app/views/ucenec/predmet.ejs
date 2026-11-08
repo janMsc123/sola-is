@@ -60,8 +60,13 @@
 </div>
 
 <!-- prosta oddaja: datoteka se shrani kot "Priimek Ime - Naslov naloge.končnica" -->
+<!-- zaprto, dokler učenec ne klikne; razpisane naloge oddaja pri nalogi -->
 <div class="okvir">
-  <div class="okvir-glava"><h2>Druga oddaja</h2><small>za nalogo, ki ni na seznamu zgoraj</small></div>
+  <details>
+  <summary class="okvir-glava">
+    <h2>Druga oddaja<% if (proste.length > 0) { %><span class="stevec"><%= proste.length %></span><% } %></h2>
+    <span class="gumb siv">Pokaži</span>
+  </summary>
   <div class="okvir-vsebina">
     <form method="post" action="/ucenec/predmet/<%= predmet.id %>/oddaja" enctype="multipart/form-data">
       <div class="dva-stolpca">
@@ -89,6 +94,7 @@
       <% } %>
     </ul>
   <% } %>
+  </details>
 </div>
 
 <%- include('../noga') %>
