@@ -1,21 +1,26 @@
 <!-- ucenec/ocene.ejs - vse moje ocene po predmetih s povprečjem -->
 <%- include('../glava', { naslov: 'Moje ocene' }) %>
 
-<h1>Moje ocene</h1>
-
-<% if (cakajo > 0) { %>
-  <p>Na oceno čaka še <b><%= cakajo %></b> oddaj.</p>
-<% } %>
+<div class="naslov-strani">
+  <div>
+    <h1>Ocene</h1>
+    <% if (cakajo > 0) { %><p class="podnaslov"><%= cakajo %> oddaj čaka na oceno</p><% } %>
+  </div>
+</div>
 
 <% if (predmeti.length === 0) { %>
-  <p>Nimate še nobene ocene.</p>
+  <div class="okvir"><p class="prazno">Nimate še nobene ocene.</p></div>
 <% } %>
 
 <% for (const p of predmeti) { %>
-  <h2><%= p.predmet %> <small class="povprecje">povprečje <%= p.povprecje %></small></h2>
+<div class="okvir">
+  <div class="okvir-glava">
+    <h2><%= p.predmet %></h2>
+    <span class="povprecje">povprečje <b><%= p.povprecje %></b></span>
+  </div>
   <div class="tabela">
   <table>
-    <tr><th>Naloga</th><th>Ocena</th><th>Komentar učitelja</th><th>Ocenjeno</th></tr>
+    <tr><th>Naloga</th><th>Ocena</th><th>Komentar</th><th>Datum</th></tr>
     <% for (const o of p.ocene) { %>
     <tr>
       <td>
@@ -25,13 +30,14 @@
           <a href="/ucenec/oddaja/<%= o.id %>"><%= o.ime_datoteke %></a>
         <% } %>
       </td>
-      <td><span class="oznaka ocena"><%= o.ocena %></span></td>
+      <td><span class="ocena"><%= o.ocena %></span></td>
       <td><%= o.komentar || '' %></td>
-      <td><%= datum(o.ocenjeno) %></td>
+      <td class="drobno"><%= datum(o.ocenjeno) %></td>
     </tr>
     <% } %>
   </table>
   </div>
+</div>
 <% } %>
 
 <%- include('../noga') %>

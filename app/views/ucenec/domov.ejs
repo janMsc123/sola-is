@@ -1,45 +1,57 @@
 <!-- ucenec/domov.ejs - predmeti, ki jih učenec obiskuje, in naloge, ki jih mora še oddati -->
 <%- include('../glava', { naslov: 'Moji predmeti' }) %>
 
-<h1>Moji predmeti <% if (razred.razred) { %><span class="oznaka modra velika"><%= razred.razred %></span><% } %></h1>
+<div class="naslov-strani">
+  <div>
+    <h1>Moji predmeti</h1>
+    <p class="podnaslov"><%= razred.razred ? 'Razred ' + razred.razred : 'Razred ni določen' %></p>
+  </div>
+</div>
 
 <% if (!razred.razred_id) { %>
   <p class="napaka">Razred vam še ni določen, zato ne vidite nalog. Obrnite se na administratorja.</p>
 <% } %>
 
 <% if (predmeti.length === 0) { %>
-  <p>Niste izbrali še nobenega predmeta. <a href="/ucenec/predmeti">Izberite predmete</a>.</p>
+  <div class="okvir"><p class="prazno">Niste izbrali še nobenega predmeta. <a href="/ucenec/predmeti">Izberite predmete</a></p></div>
 <% } %>
 
 <div class="kartice">
   <% for (const p of predmeti) { %>
     <a class="kartica" href="/ucenec/predmet/<%= p.id %>">
-      <b><%= p.naziv %></b>
-      <% if (p.ucitelj) { %><small><%= p.ucitelj %></small><br><% } %>
-      <%= p.st_gradiv %> gradiv
-      <% if (p.st_odprtih > 0) { %>
-        <br><span class="oznaka oranzna"><%= p.st_odprtih %> odprtih nalog</span>
-      <% } %>
+      <span class="kartica-naslov"><%= p.naziv %></span>
+      <%= p.ucitelj || 'brez učitelja' %>
+      <span class="kartica-spodaj">
+        <span><b><%= p.st_odprtih %></b> odprtih nalog</span>
+        <span><b><%= p.st_gradiv %></b> gradiv</span>
+      </span>
     </a>
   <% } %>
 </div>
 
-<h2>Za oddati</h2>
-
-<% if (roki.length === 0) { %>
-  <p>Vse naloge so oddane.</p>
-<% } else { %>
-  <ul class="roki">
-    <% for (const n of roki) { %>
-      <li>
-        <span class="datum"><%= datumUra(n.rok) %></span>
-        <a href="/ucenec/naloga/<%= n.id %>"><%= n.naslov %></a>
-        <small><%= n.predmet %></small>
-        <% if (new Date(n.rok) < zdaj) { %><span class="oznaka rdeca">zamujeno</span><% } %>
-      </li>
-    <% } %>
-  </ul>
-<% } %>
-<p><a href="/koledar">Odpri koledar →</a></p>
+<div class="okvir">
+  <div class="okvir-glava">
+    <h2>Za oddati<span class="stevec"><%= roki.length %></span></h2>
+    <a href="/koledar">Koledar</a>
+  </div>
+  <% if (roki.length === 0) { %>
+    <p class="prazno">Vse naloge so oddane.</p>
+  <% } else { %>
+    <ul class="seznam">
+      <% for (const n of roki) { %>
+        <li>
+          <div class="glavno">
+            <a href="/ucenec/naloga/<%= n.id %>"><%= n.naslov %></a>
+            <div class="drobno"><%= n.predmet %></div>
+          </div>
+          <% if (new Date(n.rok) < zdaj) { %>
+            <span class="stanje rdeca">Zamujeno</span>
+          <% } %>
+          <span class="desno"><%= datumUra(n.rok) %></span>
+        </li>
+      <% } %>
+    </ul>
+  <% } %>
+</div>
 
 <%- include('../noga') %>

@@ -1,42 +1,46 @@
-<!-- registracija.ejs — nov učenec si sam ustvari račun -->
+<!-- registracija.ejs - nov učenec si sam ustvari račun -->
 <%- include('glava', { naslov: 'Registracija' }) %>
 
 <div class="okvir ozek">
-  <h1>Registracija učenca</h1>
+  <div class="okvir-vsebina">
+    <h1>Registracija učenca</h1>
 
-  <% if (napaka) { %>
-    <p class="napaka"><%= napaka %></p>
-  <% } %>
+    <% if (napaka) { %>
+      <p class="napaka"><%= napaka %></p>
+    <% } %>
 
-  <!-- podatki.xxx: če je bila napaka, ostanejo vpisani podatki v poljih -->
-  <form method="post" action="/registracija">
-    <label>Ime
-      <input name="ime" value="<%= podatki.ime || '' %>" required>
-    </label>
-    <label>Priimek
-      <input name="priimek" value="<%= podatki.priimek || '' %>" required>
-    </label>
-    <label>Email
-      <input type="email" name="email" value="<%= podatki.email || '' %>" required>
-    </label>
-    <label>Razred
-      <select name="razred_id" required>
-        <option value="">Izberite razred</option>
-        <% for (const r of razredi) { %>
-          <option value="<%= r.id %>" <%= String(podatki.razred_id) === String(r.id) ? 'selected' : '' %>><%= r.naziv %></option>
-        <% } %>
-      </select>
-    </label>
-    <label>Geslo (vsaj 6 znakov)
-      <input type="password" name="geslo" minlength="6" required>
-    </label>
-    <label>Ponovi geslo
-      <input type="password" name="geslo2" minlength="6" required>
-    </label>
-    <button type="submit">Ustvari račun</button>
-  </form>
+    <!-- podatki.xxx: če je bila napaka, ostanejo vpisani podatki v poljih -->
+    <form method="post" action="/registracija">
+      <div class="dva-stolpca enaka">
+        <label>Ime
+          <input name="ime" value="<%= podatki.ime || '' %>" required>
+        </label>
+        <label>Priimek
+          <input name="priimek" value="<%= podatki.priimek || '' %>" required>
+        </label>
+      </div>
+      <label>Email
+        <input type="email" name="email" value="<%= podatki.email || '' %>" required>
+      </label>
+      <label>Razred
+        <select name="razred_id" required>
+          <option value="">Izberite razred</option>
+          <% for (const r of razredi) { %>
+            <option value="<%= r.id %>" <%= String(podatki.razred_id) === String(r.id) ? 'selected' : '' %>><%= r.naziv %></option>
+          <% } %>
+        </select>
+      </label>
+      <label>Geslo (vsaj 6 znakov)
+        <input type="password" name="geslo" minlength="6" required>
+      </label>
+      <label>Ponovi geslo
+        <input type="password" name="geslo2" minlength="6" required>
+      </label>
+      <button type="submit" class="cela">Ustvari račun</button>
+    </form>
 
-  <p>Že imate račun? <a href="/prijava">Prijava</a></p>
+    <p class="drobno pod-obrazcem">Že imate račun? <a href="/prijava">Prijava</a></p>
+  </div>
 </div>
 
 <%- include('noga') %>

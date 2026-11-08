@@ -1,27 +1,36 @@
 <!-- ucitelj/naloga-uredi.ejs - sprememba naslova, navodil ali roka naloge -->
 <%- include('../glava', { naslov: 'Uredi nalogo' }) %>
 
+<div class="naslov-strani">
+  <div>
+    <a class="nazaj" href="/ucitelj/naloga/<%= naloga.id %>">← <%= naloga.naslov %></a>
+    <h1>Uredi nalogo</h1>
+    <p class="podnaslov"><%= naloga.skupina.predmet %> · <%= naloga.skupina.razred %></p>
+  </div>
+</div>
+
+<% if (napaka) { %>
+  <p class="napaka"><%= napaka %></p>
+<% } %>
+
 <div class="okvir">
-  <h1>Uredi nalogo</h1>
-  <p><%= naloga.skupina.predmet %> · <%= naloga.skupina.razred %></p>
-
-  <% if (napaka) { %>
-    <p class="napaka"><%= napaka %></p>
-  <% } %>
-
-  <form method="post" action="/ucitelj/naloga/<%= naloga.id %>/uredi">
-    <label>Naslov
-      <input name="naslov" maxlength="100" value="<%= naloga.naslov %>" required>
-    </label>
+  <form method="post" action="/ucitelj/naloga/<%= naloga.id %>/uredi" class="okvir-vsebina">
+    <div class="dva-stolpca">
+      <label>Naslov
+        <input name="naslov" maxlength="100" value="<%= naloga.naslov %>" required>
+      </label>
+      <label>Rok oddaje
+        <input type="datetime-local" name="rok" value="<%= zaVnos(naloga.rok) %>" required>
+      </label>
+    </div>
     <label>Navodila
       <textarea name="navodila" rows="5"><%= naloga.navodila || '' %></textarea>
     </label>
-    <label>Rok oddaje
-      <input type="datetime-local" name="rok" value="<%= zaVnos(naloga.rok) %>" required>
-    </label>
-    <p><small>Že oddane datoteke obdržijo staro ime, tudi če spremenite naslov.</small></p>
-    <button type="submit">Shrani</button>
-    <a href="/ucitelj/naloga/<%= naloga.id %>">Prekliči</a>
+    <p class="drobno">Že oddane datoteke obdržijo staro ime, tudi če spremenite naslov.</p>
+    <div class="vrstica">
+      <button type="submit">Shrani</button>
+      <a class="gumb siv" href="/ucitelj/naloga/<%= naloga.id %>">Prekliči</a>
+    </div>
   </form>
 </div>
 

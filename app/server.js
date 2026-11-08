@@ -33,6 +33,7 @@ app.use(session({
 // da lahko glava pokaže pravi meni (v EJS: uporabnik)
 app.use((req, res, next) => {
   res.locals.uporabnik = req.session.uporabnik || null;
+  res.locals.pot = req.originalUrl.split('?')[0]; // za označitev strani v meniju
   next();
 });
 
@@ -64,7 +65,7 @@ app.locals.zaVnos = function (d) {
 // stanje naloge za enega učenca: vrne besedilo in barvo oznake (CSS razred)
 // v: vrstica iz baze z oddaja_id, zamuda, ocena; rok: rok naloge; zdaj: trenutni čas
 app.locals.stanje = function (v, rok, zdaj) {
-  if (v.oddaja_id && v.ocena) return { besedilo: 'Ocena ' + v.ocena, barva: 'ocena' };
+  if (v.oddaja_id && v.ocena) return { besedilo: 'Ocena ' + v.ocena, barva: 'zelena' };
   if (v.oddaja_id && v.zamuda) return { besedilo: 'Oddano z zamudo', barva: 'oranzna' };
   if (v.oddaja_id) return { besedilo: 'Oddano', barva: 'zelena' };
   if (new Date(rok) < zdaj) return { besedilo: 'Ni oddano', barva: 'rdeca' };
