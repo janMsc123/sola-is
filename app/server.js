@@ -36,12 +36,48 @@ app.use((req, res, next) => {
   next();
 });
 
+// pomožne funkcije za datume, ki jih uporabljajo vse predloge
+// (čas je slovenski, ker ima vsebnik nastavljeno TZ=Europe/Ljubljana)
+
+// samo datum, npr. "10. 11. 2026"
+app.locals.datum = function (d) {
+  return d ? new Date(d).toLocaleDateString('sl-SI') : '';
+};
+
+// datum in ura, npr. "10. 11. 2026 23:59"
+app.locals.datumUra = function (d) {
+  if (!d) return '';
+  d = new Date(d);
+  return d.toLocaleDateString('sl-SI') + ' ' +
+    d.toLocaleTimeString('sl-SI', { hour: '2-digit', minute: '2-digit' });
+};
+
+// vrednost za <input type="datetime-local">, npr. "2026-11-10T23:59"
+app.locals.zaVnos = function (d) {
+  if (!d) return '';
+  d = new Date(d);
+  const dvo = n => String(n).padStart(2, '0'); // 5 -> "05"
+  return d.getFullYear() + '-' + dvo(d.getMonth() + 1) + '-' + dvo(d.getDate()) +
+    'T' + dvo(d.getHours()) + ':' + dvo(d.getMinutes());
+};
+
+// stanje naloge za enega učenca: vrne besedilo in barvo oznake (CSS razred)
+// v: vrstica iz baze z oddaja_id, zamuda, ocena; rok: rok naloge; zdaj: trenutni čas
+app.locals.stanje = function (v, rok, zdaj) {
+  if (v.oddaja_id && v.ocena) return { besedilo: 'Ocena ' + v.ocena, barva: 'ocena' };
+  if (v.oddaja_id && v.zamuda) return { besedilo: 'Oddano z zamudo', barva: 'oranzna' };
+  if (v.oddaja_id) return { besedilo: 'Oddano', barva: 'zelena' };
+  if (new Date(rok) < zdaj) return { besedilo: 'Ni oddano', barva: 'rdeca' };
+  return { besedilo: 'Odprto', barva: 'siva' };
+};
+
 // ===== 3) POTI =====
 // vsak pogled ima svojo datoteko v mapi "routes"
 app.use('/', require('./routes/prijava'));          // /prijava, /registracija, /odjava
 app.use('/admin', require('./routes/admin'));       // samo administrator
 app.use('/ucitelj', require('./routes/ucitelj'));   // samo učitelj
 app.use('/ucenec', require('./routes/ucenec'));     // samo učenec
+app.use('/koledar', require('./routes/koledar'));   // učitelj in učenec: roki nalog po mesecih
 
 // domača stran: pošlje uporabnika na pravo mesto glede na vlogo
 app.get('/', (req, res) => {
