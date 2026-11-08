@@ -3,8 +3,11 @@
 
 <h1>Administrator</h1>
 
-<!-- tri kartice s številom zapisov -->
+<!-- kartice s številom zapisov -->
 <div class="kartice">
+  <a class="kartica" href="/admin/razredi">
+    <b><%= st.razredi %></b> razredov
+  </a>
   <a class="kartica" href="/admin/predmeti">
     <b><%= st.predmeti %></b> predmetov
   </a>
@@ -14,6 +17,12 @@
   <a class="kartica" href="/admin/ucenci">
     <b><%= st.ucenci %></b> učencev
   </a>
+  <div class="kartica">
+    <b><%= st.naloge %></b> razpisanih nalog
+  </div>
+  <div class="kartica">
+    <b><%= st.oddaje %></b> oddaj učencev
+  </div>
 </div>
 
 <%- include('../noga') %>

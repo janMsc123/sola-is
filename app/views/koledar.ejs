@@ -1,0 +1,64 @@
+<!-- koledar.ejs - mesečni koledar rokov (učitelj in učenec) -->
+<%- include('glava', { naslov: 'Koledar' }) %>
+
+<% const jeUcitelj = uporabnik.vloga === 'ucitelj'; %>
+<% const povezava = n => (jeUcitelj ? '/ucitelj/naloga/' : '/ucenec/naloga/') + n.id; %>
+<!-- barva naloge: pri učencu glede na to, ali je oddana; pri učitelju vedno modra -->
+<% const barva = n => jeUcitelj ? 'modra' : stanje(n, n.rok, zdaj).barva; %>
+
+<div class="koledar-glava">
+  <a class="gumb siv" href="/koledar?mesec=<%= prejsnji %>">←</a>
+  <h1><%= naslovMeseca %></h1>
+  <a class="gumb siv" href="/koledar?mesec=<%= naslednji %>">→</a>
+  <a href="/koledar">danes</a>
+</div>
+
+<!-- mreža: en stolpec za vsak dan v tednu (na telefonu skrita, tam je spodnji seznam) -->
+<div class="tabela koledar-mreza">
+<table class="koledar">
+  <tr>
+    <th>pon</th><th>tor</th><th>sre</th><th>čet</th><th>pet</th><th>sob</th><th>ned</th>
+  </tr>
+  <% for (const teden of tedni) { %>
+  <tr>
+    <% for (const d of teden) { %>
+      <% if (!d) { %>
+        <td class="prazen"></td>
+      <% } else { %>
+        <td class="<%= d.danes ? 'danes' : '' %> <%= d.vikend ? 'vikend' : '' %>">
+          <span class="dan"><%= d.dan %></span>
+          <% for (const n of d.naloge) { %>
+            <a class="dogodek <%= barva(n) %>" href="<%= povezava(n) %>"
+               title="<%= n.predmet %>: <%= n.naslov %>">
+              <%= n.predmet %><%= jeUcitelj ? ' ' + n.razred : '' %>: <%= n.naslov %>
+            </a>
+          <% } %>
+        </td>
+      <% } %>
+    <% } %>
+  </tr>
+  <% } %>
+</table>
+</div>
+
+<!-- isti roki še kot seznam (bolj pregledno na telefonu) -->
+<h2>Roki v mesecu (<%= naloge.length %>)</h2>
+<% if (naloge.length === 0) { %>
+  <p>Ta mesec ni rokov.</p>
+<% } else { %>
+  <ul class="roki">
+    <% for (const n of naloge) { %>
+      <li>
+        <span class="datum"><%= datumUra(n.rok) %></span>
+        <a href="<%= povezava(n) %>"><%= n.naslov %></a>
+        <small><%= n.predmet %><%= jeUcitelj ? ', ' + n.razred + ' · oddaj: ' + n.st_oddaj : '' %></small>
+        <% if (!jeUcitelj) { %>
+          <% const st = stanje(n, n.rok, zdaj); %>
+          <span class="oznaka <%= st.barva %>"><%= st.besedilo %></span>
+        <% } %>
+      </li>
+    <% } %>
+  </ul>
+<% } %>
+
+<%- include('noga') %>

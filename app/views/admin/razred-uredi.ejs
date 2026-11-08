@@ -1,0 +1,44 @@
+<!-- admin/razred-uredi.ejs - naziv razreda, njegovi učenci in kdo kaj uči v razredu -->
+<%- include('../glava', { naslov: 'Razred ' + razred.naziv }) %>
+
+<div class="okvir ozek">
+  <h1>Uredi razred</h1>
+
+  <% if (napaka) { %>
+    <p class="napaka"><%= napaka %></p>
+  <% } %>
+
+  <form method="post" action="/admin/razredi/<%= razred.id %>">
+    <label>Naziv
+      <input name="naziv" maxlength="20" value="<%= razred.naziv %>" required>
+    </label>
+    <button type="submit">Shrani</button>
+    <a href="/admin/razredi">Prekliči</a>
+  </form>
+</div>
+
+<h2>Pouk v razredu</h2>
+<% if (pouk.length === 0) { %>
+  <p>V tem razredu še nihče ne uči. Predmete v razredu dodelite pri <a href="/admin/ucitelji">učiteljih</a>.</p>
+<% } else { %>
+<div class="tabela">
+<table>
+  <tr><th>Predmet</th><th>Učitelj</th></tr>
+  <% for (const p of pouk) { %>
+  <tr>
+    <td><%= p.predmet %></td>
+    <td><a href="/admin/ucitelji/<%= p.ucitelj_id %>"><%= p.ime %> <%= p.priimek %></a></td>
+  </tr>
+  <% } %>
+</table>
+</div>
+<% } %>
+
+<h2>Učenci (<%= ucenci.length %>)</h2>
+<ol class="stolpci">
+  <% for (const u of ucenci) { %>
+    <li><a href="/admin/ucenci/<%= u.id %>"><%= u.priimek %> <%= u.ime %></a></li>
+  <% } %>
+</ol>
+
+<%- include('../noga') %>

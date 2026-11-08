@@ -1,0 +1,43 @@
+<!-- admin/razredi.ejs - seznam razredov, dodajanje, urejanje, brisanje -->
+<%- include('../glava', { naslov: 'Razredi' }) %>
+
+<h1>Razredi</h1>
+
+<% if (napaka) { %>
+  <p class="napaka"><%= napaka %></p>
+<% } %>
+
+<!-- dodajanje novega razreda -->
+<form method="post" action="/admin/razredi" class="vrstica">
+  <input name="naziv" maxlength="20" placeholder="Naziv novega razreda, npr. 1.B" required>
+  <button type="submit">Dodaj</button>
+</form>
+
+<div class="tabela">
+<table>
+  <tr>
+    <th>Razred</th>
+    <th>Učencev</th>
+    <th>Učiteljev</th>
+    <th>Predmetov</th>
+    <th></th>
+  </tr>
+  <% for (const r of razredi) { %>
+  <tr>
+    <td><a href="/admin/razredi/<%= r.id %>"><%= r.naziv %></a></td>
+    <td><a href="/admin/ucenci?razred=<%= r.id %>"><%= r.st_ucencev %></a></td>
+    <td><%= r.st_uciteljev %></td>
+    <td><%= r.st_predmetov %></td>
+    <td class="gumbi">
+      <a class="gumb" href="/admin/razredi/<%= r.id %>">Uredi</a>
+      <form method="post" action="/admin/razredi/<%= r.id %>/brisi"
+            onsubmit="return confirm('Res želite izbrisati razred <%= r.naziv %>? Učenci ostanejo brez razreda, naloge in gradiva razreda se izbrišejo.')">
+        <button class="rdec">Briši</button>
+      </form>
+    </td>
+  </tr>
+  <% } %>
+</table>
+</div>
+
+<%- include('../noga') %>

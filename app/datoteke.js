@@ -29,4 +29,9 @@ function varnoIme(ime) {
   return ime.replace(/[\/\\:*?"<>|]/g, '').trim();
 }
 
-module.exports = { MAPA, nalaganje, popraviIme, varnoIme };
+// pobriše datoteko z diska, če obstaja (če je ni, ne naredi nič)
+function pobrisi(pot) {
+  if (pot && fs.existsSync(pot)) fs.unlinkSync(pot);
+}
+
+module.exports = { MAPA, nalaganje, popraviIme, varnoIme, pobrisi };

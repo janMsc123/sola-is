@@ -44,12 +44,13 @@ sola-is/
 │   ├── db.js                 povezava z bazo
 │   ├── preveri.js            preverjanje pravic (avtorizacija)
 │   ├── datoteke.js           nalaganje datotek
-│   ├── routes/               poti: prijava, admin, ucitelj, ucenec
+│   ├── routes/               poti: prijava, admin, ucitelj, ucenec, koledar
 │   ├── views/                HTML predloge (EJS)
 │   ├── public/               style.css
 │   ├── package.json
 │   └── Dockerfile
 ├── db/init/                  SQL: tabele in testni podatki
+├── db/migracije/             SQL: posodobitev obstoječe baze (v1 -> v2)
 ├── scripts/                  auto-deploy, varnostne kopije, systemd enote
 ├── dokumentacija/            specifikacija, ER diagram, namestitev, poročila
 ├── porocila/                 dnevna poročila (vsak član svoja mapa)
@@ -79,12 +80,12 @@ pajp / crt / matevz  ──PR──►  develop  ──PR──►  main  ──
 | Dokument | Vsebina |
 |---|---|
 | [Specifikacija sistema](dokumentacija/specifikacija.md) | zahteve za vse tri poglede, podatkovni model, seznam strani |
-| [ER diagram](dokumentacija/er-diagram.png) | 8 tabel s primarnimi in tujimi ključi |
+| [ER diagram](dokumentacija/er-diagram.png) | 10 tabel s primarnimi in tujimi ključi |
 | [Skice (wireframe)](dokumentacija/skice-wireframe.pdf) | 13 zaslonov za vse tri poglede (Matevž Zvir) |
 | [Namestitev in konfiguracija strežnika](dokumentacija/namestitev.md) | arhitektura, namestitev, HTTPS, varnost, varnostne kopije, vzdrževanje |
 | [Diagram arhitekture](dokumentacija/arhitektura.png) | pot zahteve od brskalnika do baze |
 | [Uporabniška navodila](dokumentacija/uporabniska-navodila.md) | za administratorja, učitelja in učenca |
-| [Testiranje](dokumentacija/testiranje.md) | 59 testnih primerov z rezultati |
+| [Testiranje](dokumentacija/testiranje.md) | 91 testnih primerov z rezultati (v1 in v2) |
 | [Napake](https://github.com/janMsc123/sola-is/issues) | GitHub Issues |
 | [Časovni načrt](dokumentacija/casovni-nacrt.md) | 6 tednov, kdo dela kaj |
 | [Navodila projekta (RPS)](dokumentacija/navodila-RPS.pdf) | uradna navodila |
@@ -93,5 +94,15 @@ pajp / crt / matevz  ──PR──►  develop  ──PR──►  main  ──
 | [Dnevna poročila](porocila/) | vsak član v svoji mapi |
 
 ## Različice
-Končna različica je označena z oznako `v1.0`
+Prva oddana različica je označena z oznako `v1.0`
 ([Releases](https://github.com/janMsc123/sola-is/releases)).
+
+**Različica 2** doda:
+- **razrede:** učenec je v razredu, učitelj uči predmet v izbranih razredih in vidi samo svoje učence;
+- **razpisane naloge** z navodili in rokom, stanje vsakega učenca (oddano, z zamudo, ni oddano);
+- **ocene in komentarje** učitelja ter stran *Ocene* za učenca;
+- **koledar** rokov za učitelja in učenca;
+- **prenos lastnih oddaj** za učenca.
+
+Obstoječo bazo posodobi `db/migracije/2026-11-razredi-naloge.sql` (glej
+[namestitev](dokumentacija/namestitev.md)).

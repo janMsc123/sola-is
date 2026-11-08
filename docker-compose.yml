@@ -13,6 +13,7 @@ services:
       MARIADB_DATABASE: ${DB_NAME}
       MARIADB_USER: ${DB_USER}
       MARIADB_PASSWORD: ${DB_PASSWORD}
+      TZ: Europe/Ljubljana                  # slovenski čas, da se roki nalog pravilno primerjajo
     volumes:
       - baza_podatki:/var/lib/mysql                 # podatki ostanejo po ponovnem zagonu
       - ./db/init:/docker-entrypoint-initdb.d:ro    # SQL skripte ob prvem zagonu (tabele + testni podatki)
@@ -39,6 +40,7 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
       SESSION_SECRET: ${SESSION_SECRET}     # ključ za podpis piškotkov seje
+      TZ: Europe/Ljubljana                  # slovenski čas (datumi in roki na straneh)
     volumes:
       - datoteke:/app/datoteke              # gradiva in naloge (niso v mapi public)
     ports:

@@ -1,0 +1,28 @@
+<!-- ucitelj/naloga-uredi.ejs - sprememba naslova, navodil ali roka naloge -->
+<%- include('../glava', { naslov: 'Uredi nalogo' }) %>
+
+<div class="okvir">
+  <h1>Uredi nalogo</h1>
+  <p><%= naloga.skupina.predmet %> · <%= naloga.skupina.razred %></p>
+
+  <% if (napaka) { %>
+    <p class="napaka"><%= napaka %></p>
+  <% } %>
+
+  <form method="post" action="/ucitelj/naloga/<%= naloga.id %>/uredi">
+    <label>Naslov
+      <input name="naslov" maxlength="100" value="<%= naloga.naslov %>" required>
+    </label>
+    <label>Navodila
+      <textarea name="navodila" rows="5"><%= naloga.navodila || '' %></textarea>
+    </label>
+    <label>Rok oddaje
+      <input type="datetime-local" name="rok" value="<%= zaVnos(naloga.rok) %>" required>
+    </label>
+    <p><small>Že oddane datoteke obdržijo staro ime, tudi če spremenite naslov.</small></p>
+    <button type="submit">Shrani</button>
+    <a href="/ucitelj/naloga/<%= naloga.id %>">Prekliči</a>
+  </form>
+</div>
+
+<%- include('../noga') %>

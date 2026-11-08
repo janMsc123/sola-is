@@ -55,8 +55,14 @@ router.post('/prijava', async (req, res) => {
 
 // ===== REGISTRACIJA (samo učenci) =====
 
-router.get('/registracija', (req, res) => {
-  res.render('registracija', { napaka: null, podatki: {} });
+// seznam razredov za izbiro ob registraciji
+async function razredi() {
+  const [vrstice] = await db.query('SELECT * FROM razredi ORDER BY naziv');
+  return vrstice;
+}
+
+router.get('/registracija', async (req, res) => {
+  res.render('registracija', { napaka: null, podatki: {}, razredi: await razredi() });
 });
 
 router.post('/registracija', async (req, res) => {
@@ -64,15 +70,22 @@ router.post('/registracija', async (req, res) => {
   const priimek = req.body.priimek.trim();
   const email = req.body.email.trim();
   const geslo = req.body.geslo;
+  const razredId = req.body.razred_id;
 
   // osnovna validacija
   let napaka = null;
-  if (!ime || !priimek || !email) {
+  if (!ime || !priimek || !email || !razredId) {
     napaka = 'Izpolnite vsa polja.';
   } else if (geslo.length < 6) {
     napaka = 'Geslo mora imeti vsaj 6 znakov.';
   } else if (geslo !== req.body.geslo2) {
     napaka = 'Gesli se ne ujemata.';
+  }
+
+  // ali izbrani razred obstaja
+  if (!napaka) {
+    const [r] = await db.query('SELECT id FROM razredi WHERE id = ?', [razredId]);
+    if (r.length === 0) napaka = 'Izberite razred s seznama.';
   }
 
   // ali email že obstaja
@@ -84,7 +97,7 @@ router.post('/registracija', async (req, res) => {
   }
 
   if (napaka) {
-    return res.render('registracija', { napaka: napaka, podatki: req.body });
+    return res.render('registracija', { napaka: napaka, podatki: req.body, razredi: await razredi() });
   }
 
   // geslo zgostimo (10 = koliko "krogov" zgoščevanja), nikoli ne shranimo čistega gesla
@@ -95,10 +108,10 @@ router.post('/registracija', async (req, res) => {
     'INSERT INTO uporabniki (email, geslo_hash, vloga) VALUES (?, ?, ?)',
     [email, hash, 'ucenec']
   );
-  // 2) profil učenca, povezan z računom
+  // 2) profil učenca z razredom, povezan z računom
   const [rezultat2] = await db.query(
-    'INSERT INTO ucenci (uporabnik_id, ime, priimek) VALUES (?, ?, ?)',
-    [rezultat.insertId, ime, priimek]
+    'INSERT INTO ucenci (uporabnik_id, ime, priimek, razred_id) VALUES (?, ?, ?, ?)',
+    [rezultat.insertId, ime, priimek, razredId]
   );
 
   // takoj ga prijavimo
