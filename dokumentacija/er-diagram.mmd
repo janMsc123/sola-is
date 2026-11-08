@@ -1,0 +1,88 @@
+erDiagram
+  uporabniki ||--o| ucitelji : "račun"
+  uporabniki ||--o| ucenci : "račun"
+  razredi |o--o{ ucenci : "ima"
+  ucitelji ||--o{ ucitelj_predmet : "uči"
+  predmeti ||--o{ ucitelj_predmet : "se uči"
+  razredi ||--o{ ucitelj_predmet : "v razredu"
+  ucenci ||--o{ ucenec_predmet : "obiskuje"
+  predmeti ||--o{ ucenec_predmet : "obiskujejo"
+  predmeti ||--o{ gradiva : ""
+  ucitelji ||--o{ gradiva : "naloži"
+  razredi |o--o{ gradiva : "za razred"
+  predmeti ||--o{ naloge : ""
+  razredi ||--o{ naloge : "za razred"
+  ucitelji ||--o{ naloge : "razpiše"
+  naloge |o--o{ oddaje : "k nalogi"
+  predmeti ||--o{ oddaje : ""
+  ucenci ||--o{ oddaje : "odda"
+
+  uporabniki {
+    int id PK
+    varchar email UK
+    varchar geslo_hash
+    enum vloga
+    timestamp ustvarjeno
+  }
+  ucitelji {
+    int id PK
+    int uporabnik_id FK,UK
+    varchar ime
+    varchar priimek
+  }
+  razredi {
+    int id PK
+    varchar naziv UK
+  }
+  ucenci {
+    int id PK
+    int uporabnik_id FK,UK
+    varchar ime
+    varchar priimek
+    int razred_id FK "NULL"
+  }
+  predmeti {
+    int id PK
+    varchar naziv UK
+  }
+  ucitelj_predmet {
+    int ucitelj_id PK,FK
+    int predmet_id PK,FK
+    int razred_id PK,FK
+  }
+  ucenec_predmet {
+    int ucenec_id PK,FK
+    int predmet_id PK,FK
+  }
+  gradiva {
+    int id PK
+    int predmet_id FK
+    int ucitelj_id FK
+    int razred_id FK "NULL = vsi razredi"
+    varchar ime_datoteke
+    varchar pot
+    timestamp nalozeno
+  }
+  naloge {
+    int id PK
+    int predmet_id FK
+    int razred_id FK
+    int ucitelj_id FK
+    varchar naslov
+    text navodila
+    datetime rok
+    timestamp ustvarjeno
+  }
+  oddaje {
+    int id PK
+    int naloga_id FK "NULL = prosta oddaja"
+    int predmet_id FK
+    int ucenec_id FK
+    varchar ime_datoteke
+    varchar pot
+    timestamp oddano
+    boolean potrjeno
+    tinyint ocena "1 do 5"
+    text komentar
+    timestamp ocenjeno
+  }

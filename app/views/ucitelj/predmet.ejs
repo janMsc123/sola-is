@@ -1,16 +1,59 @@
-<!-- ucitelj/predmet.ejs — gradiva in oddane naloge pri enem predmetu -->
-<%- include('../glava', { naslov: predmet.naziv }) %>
+<!-- ucitelj/predmet.ejs - ena skupina (predmet v razredu): naloge, gradiva, učenci, proste oddaje -->
+<%- include('../glava', { naslov: skupina.predmet + ' ' + skupina.razred }) %>
 
-<h1><%= predmet.naziv %></h1>
+<% const pot = '/ucitelj/predmet/' + skupina.predmet_id + '/razred/' + skupina.razred_id; %>
+
+<h1><%= skupina.predmet %> <span class="oznaka modra velika"><%= skupina.razred %></span></h1>
 
 <% if (napaka) { %>
   <p class="napaka"><%= napaka %></p>
 <% } %>
 
+<!-- ===== NALOGE ===== -->
+<h2>Naloge</h2>
+
+<details class="okvir">
+  <summary>+ Razpiši novo nalogo</summary>
+  <form method="post" action="<%= pot %>/naloga">
+    <label>Naslov
+      <input name="naslov" maxlength="100" placeholder="npr. Domača naloga 3" required>
+    </label>
+    <label>Navodila
+      <textarea name="navodila" rows="4" placeholder="Kaj morajo učenci narediti in oddati"></textarea>
+    </label>
+    <label>Rok oddaje
+      <input type="datetime-local" name="rok" required>
+    </label>
+    <button type="submit">Razpiši</button>
+  </form>
+</details>
+
+<% if (naloge.length === 0) { %>
+  <p>Še niste razpisali nobene naloge.</p>
+<% } else { %>
+<div class="tabela">
+<table>
+  <tr><th>Naloga</th><th>Rok</th><th>Oddaj</th><th>Ocenjeno</th></tr>
+  <% for (const n of naloge) { %>
+  <tr>
+    <td><a href="/ucitelj/naloga/<%= n.id %>"><%= n.naslov %></a></td>
+    <td>
+      <%= datumUra(n.rok) %>
+      <% if (new Date(n.rok) < zdaj) { %><span class="oznaka siva">potekel</span><% } %>
+    </td>
+    <td><%= n.st_oddaj %> / <%= ucenci.length %></td>
+    <td><%= n.st_ocenjenih %> / <%= n.st_oddaj %></td>
+  </tr>
+  <% } %>
+</table>
+</div>
+<% } %>
+
+<!-- ===== GRADIVA ===== -->
 <h2>Gradiva</h2>
 
 <!-- enctype="multipart/form-data" je obvezen, če obrazec pošilja datoteko -->
-<form method="post" action="/ucitelj/predmet/<%= predmet.id %>/gradivo"
+<form method="post" action="<%= pot %>/gradivo"
       enctype="multipart/form-data" class="vrstica">
   <input type="file" name="datoteka" required>
   <button type="submit">Naloži gradivo</button>
@@ -24,12 +67,16 @@
   <tr><th>Datoteka</th><th>Naložil</th><th>Datum</th><th></th></tr>
   <% for (const g of gradiva) { %>
   <tr>
-    <td><a href="/ucitelj/gradivo/<%= g.id %>"><%= g.ime_datoteke %></a></td>
+    <td>
+      <a href="/ucitelj/gradivo/<%= g.id %>"><%= g.ime_datoteke %></a>
+      <% if (g.razred_id === null) { %><span class="oznaka siva">vsi razredi</span><% } %>
+    </td>
     <td><%= g.ime %> <%= g.priimek %></td>
-    <td><%= g.nalozeno.toLocaleString('sl-SI') %></td>
+    <td><%= datumUra(g.nalozeno) %></td>
     <td>
       <form method="post" action="/ucitelj/gradivo/<%= g.id %>/brisi"
             onsubmit="return confirm('Res želite izbrisati to gradivo?')">
+        <input type="hidden" name="nazaj" value="<%= pot %>">
         <button class="rdec">Briši</button>
       </form>
     </td>
@@ -39,19 +86,29 @@
 </div>
 <% } %>
 
-<h2>Oddane naloge (<%= naloge.length %>)</h2>
+<!-- ===== UČENCI ===== -->
+<h2>Učenci (<%= ucenci.length %>)</h2>
+<details class="okvir">
+  <summary>Pokaži seznam učencev razreda <%= skupina.razred %>, ki obiskujejo <%= skupina.predmet %></summary>
+  <ol class="stolpci">
+    <% for (const u of ucenci) { %>
+      <li><%= u.priimek %> <%= u.ime %></li>
+    <% } %>
+  </ol>
+</details>
 
-<% if (naloge.length === 0) { %>
-  <p>Učenci še niso oddali nobene naloge.</p>
-<% } else { %>
+<!-- ===== PROSTE ODDAJE ===== -->
+<% if (proste.length > 0) { %>
+<h2 id="proste">Druge oddaje (brez razpisane naloge)</h2>
 <div class="tabela">
 <table>
-  <tr><th>Učenec</th><th>Datoteka</th><th>Oddano</th></tr>
-  <% for (const n of naloge) { %>
+  <tr><th>Učenec</th><th>Datoteka</th><th>Oddano</th><th>Ocena in komentar</th></tr>
+  <% for (const o of proste) { %>
   <tr>
-    <td><%= n.priimek %> <%= n.ime %></td>
-    <td><a href="/ucitelj/naloga/<%= n.id %>"><%= n.ime_datoteke %></a></td>
-    <td><%= n.oddano.toLocaleString('sl-SI') %></td>
+    <td><%= o.priimek %> <%= o.ime %></td>
+    <td><a href="/ucitelj/oddaja/<%= o.id %>"><%= o.ime_datoteke %></a></td>
+    <td><%= datumUra(o.oddano) %></td>
+    <td><%- include('ocena-obrazec', { o: o }) %></td>
   </tr>
   <% } %>
 </table>

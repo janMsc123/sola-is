@@ -108,7 +108,8 @@ label {
   margin-bottom: 12px;
 }
 
-input[type=email], input[type=password], input:not([type]) {
+input[type=email], input[type=password], input:not([type]),
+input[type=datetime-local], select, textarea {
   display: block;
   width: 100%;
   padding: 8px;
@@ -164,7 +165,7 @@ button:hover, .gumb:hover {
 }
 
 button.rdec { background: #b91c1c; }
-button.siv  { background: #666; }
+button.siv, .gumb.siv { background: #666; }
 
 /* več gumbov v eni celici tabele */
 .gumbi {
@@ -211,6 +212,149 @@ th {
   border-radius: 4px;
 }
 
+textarea {
+  font-family: inherit;
+  resize: vertical;
+}
+
+/* ===== oznake (majhne barvne nalepke: stanje naloge, razred, ocena) ===== */
+.oznaka {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: bold;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.oznaka.velika { font-size: 15px; padding: 3px 10px; }
+
+.modra   { background: #dbe4ff; color: #1e3a8a; }
+.zelena  { background: #dcfce7; color: #166534; }
+.oranzna { background: #ffedd5; color: #9a3412; }
+.rdeca   { background: #fde2e2; color: #b91c1c; }
+.siva    { background: #e5e7eb; color: #444; }
+.ocena   { background: #1e3a8a; color: white; }
+
+/* ===== seznam rokov (domača stran, koledar) ===== */
+.roki {
+  list-style: none;
+  padding: 0;
+}
+.roki li {
+  background: white;
+  border: 1px solid #ddd;
+  border-left: 4px solid #1e3a8a;
+  border-radius: 4px;
+  padding: 8px 12px;
+  margin-bottom: 6px;
+}
+.roki .datum {
+  display: inline-block;
+  min-width: 130px;
+  color: #555;
+  font-size: 14px;
+}
+
+/* ===== podrobnosti naloge ===== */
+.navodila {
+  white-space: pre-line; /* prelomi vrstic iz navodil ostanejo */
+  background: #f8fafc;
+  padding: 10px;
+  border-radius: 4px;
+}
+.drobtine {
+  margin-bottom: 0;
+  font-size: 14px;
+}
+.povprecje {
+  font-size: 14px;
+  color: #555;
+  font-weight: normal;
+}
+details summary {
+  cursor: pointer;
+  font-weight: bold;
+  color: #1e3a8a;
+}
+details[open] summary {
+  margin-bottom: 12px;
+}
+
+/* seznam učencev v več stolpcih */
+.stolpci {
+  columns: 3 200px;
+}
+
+/* obrazec za oceno v celici tabele */
+.ocenjevanje {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.ocenjevanje select {
+  width: auto;
+  margin-top: 0;
+}
+.ocenjevanje input {
+  flex: 1;
+  min-width: 140px;
+  margin-top: 0;
+}
+
+/* mreža predmet x razred pri učitelju */
+.mreza td, .mreza th {
+  text-align: center;
+}
+.mreza td:first-child {
+  text-align: left;
+}
+.vrstica select {
+  width: auto;
+  margin-top: 0;
+}
+
+/* ===== koledar ===== */
+.koledar-glava {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.koledar-glava h1 {
+  min-width: 200px;
+  text-align: center;
+}
+.koledar {
+  table-layout: fixed;
+  min-width: 700px;
+}
+.koledar td {
+  vertical-align: top;
+  height: 90px;
+  padding: 4px;
+}
+.koledar .dan {
+  display: block;
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 3px;
+}
+.koledar .prazen  { background: #f7f7f7; }
+.koledar .vikend  { background: #fafafa; }
+.koledar .danes   { background: #eef2ff; }
+.koledar .danes .dan { font-weight: bold; color: #1e3a8a; }
+.dogodek {
+  display: block;
+  font-size: 12px;
+  padding: 2px 4px;
+  border-radius: 3px;
+  margin-bottom: 2px;
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* ===== telefon (ozek zaslon) ===== */
 @media (max-width: 600px) {
   main {
@@ -221,5 +365,16 @@ th {
   }
   .kljukica {
     width: 100%;
+  }
+  /* koledar: mreža je preširoka za telefon, ostane seznam rokov */
+  .koledar-mreza {
+    display: none;
+  }
+  .koledar-glava h1 {
+    min-width: 0;
+    font-size: 22px;
+  }
+  .roki .datum {
+    display: block;
   }
 }

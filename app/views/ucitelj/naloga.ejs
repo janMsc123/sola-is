@@ -1,0 +1,63 @@
+<!-- ucitelj/naloga.ejs - ena naloga: navodila, kdo je oddal, kdo ne, ocenjevanje -->
+<%- include('../glava', { naslov: naloga.naslov }) %>
+
+<% const s = naloga.skupina; %>
+<% const oddali = ucenci.filter(u => u.oddaja_id).length; %>
+
+<p class="drobtine">
+  <a href="/ucitelj/predmet/<%= s.predmet_id %>/razred/<%= s.razred_id %>"><%= s.predmet %> · <%= s.razred %></a>
+</p>
+
+<h1><%= naloga.naslov %></h1>
+
+<% if (uspeh) { %>
+  <p class="uspeh"><%= uspeh %></p>
+<% } %>
+
+<div class="okvir">
+  <p>
+    <b>Rok:</b> <%= datumUra(naloga.rok) %>
+    <% if (new Date(naloga.rok) < zdaj) { %><span class="oznaka siva">potekel</span><% } %>
+    · <b>Oddalo:</b> <%= oddali %> od <%= ucenci.length %>
+  </p>
+  <% if (naloga.navodila) { %>
+    <p class="navodila"><%= naloga.navodila %></p>
+  <% } %>
+  <div class="vrstica">
+    <a class="gumb" href="/ucitelj/naloga/<%= naloga.id %>/uredi">Uredi nalogo</a>
+    <form method="post" action="/ucitelj/naloga/<%= naloga.id %>/brisi"
+          onsubmit="return confirm('Res želite izbrisati nalogo? Izbrišejo se tudi vse oddaje učencev.')">
+      <button class="rdec">Briši nalogo</button>
+    </form>
+  </div>
+</div>
+
+<h2>Oddaje učencev</h2>
+
+<div class="tabela">
+<table>
+  <tr><th>Učenec</th><th>Stanje</th><th>Datoteka</th><th>Ocena in komentar</th></tr>
+  <% for (const u of ucenci) { %>
+  <% const st = stanje(u, naloga.rok, zdaj); %>
+  <tr id="u<%= u.id %>">
+    <td><%= u.priimek %> <%= u.ime %></td>
+    <td><span class="oznaka <%= st.barva %>"><%= st.besedilo %></span></td>
+    <td>
+      <% if (u.oddaja_id) { %>
+        <a href="/ucitelj/oddaja/<%= u.oddaja_id %>"><%= u.ime_datoteke %></a>
+        <br><small><%= datumUra(u.oddano) %></small>
+      <% } else { %>
+        <small>ni oddaje</small>
+      <% } %>
+    </td>
+    <td>
+      <% if (u.oddaja_id) { %>
+        <%- include('ocena-obrazec', { o: { id: u.oddaja_id, ocena: u.ocena, komentar: u.komentar } }) %>
+      <% } %>
+    </td>
+  </tr>
+  <% } %>
+</table>
+</div>
+
+<%- include('../noga') %>

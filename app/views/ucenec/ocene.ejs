@@ -1,0 +1,37 @@
+<!-- ucenec/ocene.ejs - vse moje ocene po predmetih s povprečjem -->
+<%- include('../glava', { naslov: 'Moje ocene' }) %>
+
+<h1>Moje ocene</h1>
+
+<% if (cakajo > 0) { %>
+  <p>Na oceno čaka še <b><%= cakajo %></b> oddaj.</p>
+<% } %>
+
+<% if (predmeti.length === 0) { %>
+  <p>Nimate še nobene ocene.</p>
+<% } %>
+
+<% for (const p of predmeti) { %>
+  <h2><%= p.predmet %> <small class="povprecje">povprečje <%= p.povprecje %></small></h2>
+  <div class="tabela">
+  <table>
+    <tr><th>Naloga</th><th>Ocena</th><th>Komentar učitelja</th><th>Ocenjeno</th></tr>
+    <% for (const o of p.ocene) { %>
+    <tr>
+      <td>
+        <% if (o.naloga_id) { %>
+          <a href="/ucenec/naloga/<%= o.naloga_id %>"><%= o.naslov %></a>
+        <% } else { %>
+          <a href="/ucenec/oddaja/<%= o.id %>"><%= o.ime_datoteke %></a>
+        <% } %>
+      </td>
+      <td><span class="oznaka ocena"><%= o.ocena %></span></td>
+      <td><%= o.komentar || '' %></td>
+      <td><%= datum(o.ocenjeno) %></td>
+    </tr>
+    <% } %>
+  </table>
+  </div>
+<% } %>
+
+<%- include('../noga') %>
