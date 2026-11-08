@@ -177,7 +177,7 @@ zamudo, rdeče neoddano, sivo še odprto. Na telefonu so roki prikazani kot sezn
 ![Koledar učenca](slike/koledar-ucenec.png)
 
 ### Profil
-V meniju klikni **Profil**. Spremeniš lahko ime, priimek in email. Razred vidiš, spremeni ga
+Klikni svoje ime desno zgoraj. Spremeniš lahko ime, priimek in email. Razred vidiš, spremeni ga
 administrator. Polje za geslo pusti prazno,
 če gesla ne menjaš. Klikni **Shrani**.
 
