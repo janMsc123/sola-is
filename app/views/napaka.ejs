@@ -1,8 +1,12 @@
-<!-- napaka.ejs — prikaže sporočilo o napaki (ni dostopa, ne obstaja ...) -->
+<!-- napaka.ejs - prikaže sporočilo o napaki (ni dostopa, ne obstaja ...) -->
 <%- include('glava', { naslov: 'Napaka' }) %>
 
-<h1>Napaka</h1>
-<p class="napaka"><%= sporocilo %></p>
-<p><a href="/">Nazaj na začetek</a></p>
+<div class="okvir ozek">
+  <div class="okvir-vsebina">
+    <h1>Napaka</h1>
+    <p class="podnaslov"><%= sporocilo %></p>
+    <p class="pod-obrazcem"><a href="/" class="gumb siv">Nazaj na začetek</a></p>
+  </div>
+</div>
 
 <%- include('noga') %>

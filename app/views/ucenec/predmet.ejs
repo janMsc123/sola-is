@@ -1,79 +1,94 @@
 <!-- ucenec/predmet.ejs - gradiva, razpisane naloge in proste oddaje pri enem predmetu -->
 <%- include('../glava', { naslov: predmet.naziv }) %>
 
-<h1><%= predmet.naziv %></h1>
-<% if (ucitelji.length > 0) { %>
-  <p>Učitelj: <%= ucitelji.map(t => t.ime + ' ' + t.priimek).join(', ') %> · razred <%= razred.razred %></p>
-<% } %>
+<div class="naslov-strani">
+  <div>
+    <a class="nazaj" href="/ucenec">← Moji predmeti</a>
+    <h1><%= predmet.naziv %></h1>
+    <p class="podnaslov">
+      <%= ucitelji.length ? ucitelji.map(t => t.ime + ' ' + t.priimek).join(', ') : 'Brez učitelja' %>
+      <% if (razred.razred) { %> · <%= razred.razred %><% } %>
+    </p>
+  </div>
+</div>
 
 <% if (napaka) { %>
   <p class="napaka"><%= napaka %></p>
 <% } %>
 
-<h2>Naloge</h2>
-
-<% if (naloge.length === 0) { %>
-  <p>Učitelj še ni razpisal nobene naloge.</p>
-<% } else { %>
-<div class="tabela">
-<table>
-  <tr><th>Naloga</th><th>Rok</th><th>Stanje</th></tr>
-  <% for (const n of naloge) { %>
-  <% const st = stanje(n, n.rok, zdaj); %>
-  <tr>
-    <td><a href="/ucenec/naloga/<%= n.id %>"><%= n.naslov %></a></td>
-    <td><%= datumUra(n.rok) %></td>
-    <td><span class="oznaka <%= st.barva %>"><%= st.besedilo %></span></td>
-  </tr>
+<div class="okvir">
+  <div class="okvir-glava"><h2>Naloge<span class="stevec"><%= naloge.length %></span></h2></div>
+  <% if (naloge.length === 0) { %>
+    <p class="prazno">Učitelj še ni razpisal nobene naloge.</p>
+  <% } else { %>
+  <div class="tabela">
+  <table>
+    <tr><th>Naloga</th><th>Rok</th><th>Stanje</th></tr>
+    <% for (const n of naloge) { %>
+    <% const st = stanje(n, n.rok, zdaj); %>
+    <tr>
+      <td><a href="/ucenec/naloga/<%= n.id %>"><%= n.naslov %></a></td>
+      <td><%= datumUra(n.rok) %></td>
+      <td>
+        <% if (n.ocena) { %>
+          <span class="ocena"><%= n.ocena %></span>
+        <% } else { %>
+          <span class="stanje <%= st.barva %>"><%= st.besedilo %></span>
+        <% } %>
+      </td>
+    </tr>
+    <% } %>
+  </table>
+  </div>
   <% } %>
-</table>
 </div>
-<% } %>
 
-<h2>Gradiva</h2>
+<div class="okvir">
+  <div class="okvir-glava"><h2>Gradiva<span class="stevec"><%= gradiva.length %></span></h2></div>
+  <% if (gradiva.length === 0) { %>
+    <p class="prazno">Učitelj še ni naložil gradiv.</p>
+  <% } else { %>
+    <ul class="seznam">
+      <% for (const g of gradiva) { %>
+        <li>
+          <div class="glavno"><a href="/ucenec/gradivo/<%= g.id %>"><%= g.ime_datoteke %></a></div>
+          <span class="desno"><%= datum(g.nalozeno) %></span>
+        </li>
+      <% } %>
+    </ul>
+  <% } %>
+</div>
 
-<% if (gradiva.length === 0) { %>
-  <p>Učitelj še ni naložil gradiv.</p>
-<% } else { %>
-  <ul>
-    <% for (const g of gradiva) { %>
-      <li>
-        <a href="/ucenec/gradivo/<%= g.id %>"><%= g.ime_datoteke %></a>
-        <small>(<%= datum(g.nalozeno) %>)</small>
-      </li>
-    <% } %>
-  </ul>
-<% } %>
-
-<h2>Druga oddaja</h2>
-<p><small>Za nalogo, ki je učitelj ni razpisal zgoraj. Razpisane naloge oddaš s klikom na nalogo.</small></p>
-
-<!-- datoteka se shrani kot "Priimek Ime - Naslov naloge.končnica" -->
-<form method="post" action="/ucenec/predmet/<%= predmet.id %>/oddaja"
-      enctype="multipart/form-data" class="okvir">
-  <label>Naslov naloge
-    <input name="naslov" maxlength="100" placeholder="npr. Domača naloga 1" required>
-  </label>
-  <label>Datoteka
-    <input type="file" name="datoteka" required>
-  </label>
-  <button type="submit">Oddaj</button>
-</form>
-
-<% if (proste.length > 0) { %>
-  <h3>Moje druge oddaje</h3>
-  <ul>
-    <% for (const o of proste) { %>
-      <li>
-        <a href="/ucenec/oddaja/<%= o.id %>"><%= o.ime_datoteke %></a>
-        <small>(<%= datumUra(o.oddano) %>)</small>
-        <% if (o.ocena) { %><span class="oznaka ocena">Ocena <%= o.ocena %></span><% } %>
-        <% if (o.komentar) { %><br><small>Komentar učitelja: <%= o.komentar %></small><% } %>
-      </li>
-    <% } %>
-  </ul>
-<% } %>
-
-<p><a href="/ucenec">← Nazaj na moje predmete</a></p>
+<!-- prosta oddaja: datoteka se shrani kot "Priimek Ime - Naslov naloge.končnica" -->
+<div class="okvir">
+  <div class="okvir-glava"><h2>Druga oddaja</h2><small>za nalogo, ki ni na seznamu zgoraj</small></div>
+  <div class="okvir-vsebina">
+    <form method="post" action="/ucenec/predmet/<%= predmet.id %>/oddaja" enctype="multipart/form-data">
+      <div class="dva-stolpca">
+        <label>Naslov naloge
+          <input name="naslov" maxlength="100" placeholder="npr. Domača naloga 1" required>
+        </label>
+        <label>Datoteka
+          <input type="file" name="datoteka" required>
+        </label>
+      </div>
+      <button type="submit">Oddaj</button>
+    </form>
+  </div>
+  <% if (proste.length > 0) { %>
+    <ul class="seznam z-crto">
+      <% for (const o of proste) { %>
+        <li>
+          <div class="glavno">
+            <a href="/ucenec/oddaja/<%= o.id %>"><%= o.ime_datoteke %></a>
+            <% if (o.komentar) { %><div class="drobno">Komentar: <%= o.komentar %></div><% } %>
+          </div>
+          <% if (o.ocena) { %><span class="ocena"><%= o.ocena %></span><% } %>
+          <span class="desno"><%= datumUra(o.oddano) %></span>
+        </li>
+      <% } %>
+    </ul>
+  <% } %>
+</div>
 
 <%- include('../noga') %>

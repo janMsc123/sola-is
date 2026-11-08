@@ -1,52 +1,60 @@
-<!-- admin/osebe.ejs — seznam učiteljev ALI učencev (ista stran za oba) -->
+<!-- admin/osebe.ejs - seznam učiteljev ALI učencev (ista stran za oba) -->
 <!-- v = nastavitve vrste (naslov, ednina ...), vrsta = "ucitelji" ali "ucenci" -->
 <%- include('../glava', { naslov: v.naslov }) %>
 
-<h1><%= v.naslov %> (<%= osebe.length %>)</h1>
+<div class="naslov-strani">
+  <div>
+    <h1><%= v.naslov %></h1>
+    <p class="podnaslov"><%= osebe.length %> <%= iskanje || razredId ? 'zadetkov' : 'skupaj' %></p>
+  </div>
+  <a class="gumb" href="/admin/<%= vrsta %>/nov">Dodaj <%= v.tozilnik %></a>
+</div>
 
-<div class="vrstica">
-  <a class="gumb" href="/admin/<%= vrsta %>/nov">+ Dodaj</a>
-
+<div class="okvir">
   <!-- iskanje po imenu ali priimku, učence tudi po razredu -->
-  <form method="get" action="/admin/<%= vrsta %>" class="vrstica">
+  <form method="get" action="/admin/<%= vrsta %>" class="okvir-glava vrstica">
     <input name="iskanje" value="<%= iskanje %>" placeholder="Išči po imenu ali priimku">
     <% if (vrsta === 'ucenci') { %>
       <select name="razred" aria-label="Razred">
-        <option value="">vsi razredi</option>
+        <option value="">Vsi razredi</option>
         <% for (const r of razredi) { %>
           <option value="<%= r.id %>" <%= String(razredId) === String(r.id) ? 'selected' : '' %>><%= r.naziv %></option>
         <% } %>
       </select>
     <% } %>
-    <button type="submit">Išči</button>
+    <button type="submit" class="siv">Išči</button>
   </form>
-</div>
 
-<div class="tabela">
-<table>
-  <tr>
-    <th>Priimek in ime</th>
-    <% if (vrsta === 'ucenci') { %><th>Razred</th><% } %>
-    <th>Email</th>
-    <th><%= vrsta === 'ucitelji' ? 'Predmeti (razredi)' : 'Predmeti' %></th>
-    <th></th>
-  </tr>
-  <% for (const o of osebe) { %>
-  <tr>
-    <td><%= o.priimek %> <%= o.ime %></td>
-    <% if (vrsta === 'ucenci') { %><td><%= o.razred || '-' %></td><% } %>
-    <td><%= o.email %></td>
-    <td><%= o.predmeti || '—' %></td>
-    <td class="gumbi">
-      <a class="gumb" href="/admin/<%= vrsta %>/<%= o.id %>">Uredi</a>
-      <form method="post" action="/admin/<%= vrsta %>/<%= o.id %>/brisi"
-            onsubmit="return confirm('Res želite izbrisati: <%= o.ime %> <%= o.priimek %>?')">
-        <button class="rdec">Briši</button>
-      </form>
-    </td>
-  </tr>
+  <% if (osebe.length === 0) { %>
+    <p class="prazno">Ni zadetkov.</p>
+  <% } else { %>
+  <div class="tabela">
+  <table>
+    <tr>
+      <th>Priimek in ime</th>
+      <% if (vrsta === 'ucenci') { %><th>Razred</th><% } %>
+      <th>Email</th>
+      <th><%= vrsta === 'ucitelji' ? 'Predmeti (razredi)' : 'Predmeti' %></th>
+      <th></th>
+    </tr>
+    <% for (const o of osebe) { %>
+    <tr>
+      <td><b><%= o.priimek %> <%= o.ime %></b></td>
+      <% if (vrsta === 'ucenci') { %><td><%= o.razred || '-' %></td><% } %>
+      <td class="drobno"><%= o.email %></td>
+      <td class="drobno"><%= o.predmeti || '-' %></td>
+      <td class="gumbi">
+        <a class="gumb siv majhen" href="/admin/<%= vrsta %>/<%= o.id %>">Uredi</a>
+        <form method="post" action="/admin/<%= vrsta %>/<%= o.id %>/brisi"
+              onsubmit="return confirm('Res želite izbrisati: <%= o.ime %> <%= o.priimek %>?')">
+          <button class="rdec majhen">Briši</button>
+        </form>
+      </td>
+    </tr>
+    <% } %>
+  </table>
+  </div>
   <% } %>
-</table>
 </div>
 
 <%- include('../noga') %>

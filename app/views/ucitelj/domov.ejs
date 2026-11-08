@@ -1,40 +1,54 @@
 <!-- ucitelj/domov.ejs - skupine (predmet + razred), ki jih učitelj poučuje, in prihajajoči roki -->
 <%- include('../glava', { naslov: 'Moji predmeti' }) %>
 
-<h1>Moji predmeti</h1>
+<div class="naslov-strani">
+  <div>
+    <h1>Moji predmeti</h1>
+    <p class="podnaslov"><%= skupine.length %> skupin</p>
+  </div>
+</div>
 
 <% if (skupine.length === 0) { %>
-  <p>Ne poučujete nobenega predmeta. Obrnite se na administratorja.</p>
+  <div class="okvir"><p class="prazno">Ne poučujete nobenega predmeta. Obrnite se na administratorja.</p></div>
 <% } %>
 
 <div class="kartice">
   <% for (const s of skupine) { %>
     <a class="kartica" href="/ucitelj/predmet/<%= s.predmet_id %>/razred/<%= s.razred_id %>">
-      <b><%= s.predmet %></b>
-      <span class="oznaka modra"><%= s.razred %></span>
-      <%= s.st_ucencev %> učencev · <%= s.st_nalog %> nalog
-      <% if (s.st_neocenjenih > 0) { %>
-        <br><span class="oznaka oranzna"><%= s.st_neocenjenih %> za oceniti</span>
-      <% } %>
+      <span class="kartica-naslov"><%= s.predmet %></span>
+      Razred <%= s.razred %>
+      <span class="kartica-spodaj">
+        <span><b><%= s.st_ucencev %></b> učencev</span>
+        <span><b><%= s.st_nalog %></b> nalog</span>
+        <% if (s.st_neocenjenih > 0) { %>
+          <span class="znacka opozorilo"><%= s.st_neocenjenih %> za oceniti</span>
+        <% } %>
+      </span>
     </a>
   <% } %>
 </div>
 
-<h2>Prihajajoči roki</h2>
-
-<% if (roki.length === 0) { %>
-  <p>V naslednjih dneh nimate nobenega roka.</p>
-<% } else { %>
-  <ul class="roki">
-    <% for (const n of roki) { %>
-      <li>
-        <span class="datum"><%= datumUra(n.rok) %></span>
-        <a href="/ucitelj/naloga/<%= n.id %>"><%= n.naslov %></a>
-        <small><%= n.predmet %>, <%= n.razred %> · oddaj: <%= n.st_oddaj %></small>
-      </li>
-    <% } %>
-  </ul>
-  <p><a href="/koledar">Odpri koledar →</a></p>
-<% } %>
+<div class="okvir">
+  <div class="okvir-glava">
+    <h2>Prihajajoči roki</h2>
+    <a href="/koledar">Koledar</a>
+  </div>
+  <% if (roki.length === 0) { %>
+    <p class="prazno">V naslednjih dneh nimate nobenega roka.</p>
+  <% } else { %>
+    <ul class="seznam">
+      <% for (const n of roki) { %>
+        <li>
+          <div class="glavno">
+            <a href="/ucitelj/naloga/<%= n.id %>"><%= n.naslov %></a>
+            <div class="drobno"><%= n.predmet %> · <%= n.razred %></div>
+          </div>
+          <span class="desno"><%= n.st_oddaj %> oddaj</span>
+          <span class="desno"><%= datumUra(n.rok) %></span>
+        </li>
+      <% } %>
+    </ul>
+  <% } %>
+</div>
 
 <%- include('../noga') %>

@@ -1,11 +1,11 @@
 <!-- ucitelj/ocena-obrazec.ejs - majhen obrazec za oceno in komentar ene oddaje (o) -->
 <form method="post" action="/ucitelj/oddaja/<%= o.id %>/ocena" class="ocenjevanje">
   <select name="ocena" aria-label="Ocena">
-    <option value="">brez ocene</option>
+    <option value="">-</option>
     <% for (let i = 5; i >= 1; i--) { %>
       <option value="<%= i %>" <%= o.ocena === i ? 'selected' : '' %>><%= i %></option>
     <% } %>
   </select>
   <input name="komentar" value="<%= o.komentar || '' %>" placeholder="Komentar za učenca" aria-label="Komentar">
-  <button type="submit">Shrani</button>
+  <button type="submit" class="siv majhen">Shrani</button>
 </form>
