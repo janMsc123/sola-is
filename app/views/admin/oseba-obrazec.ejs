@@ -24,20 +24,55 @@
       <input type="password" name="geslo" <%= oseba.id ? '' : 'required' %>>
     </label>
 
-    <!-- predmeti s kljukicami; obkljukani so tisti, ki so že izbrani -->
-    <fieldset>
-      <legend>
-        <%= vrsta === 'ucitelji' ? 'Predmeti, ki jih poučuje' : 'Predmeti, ki jih obiskuje' %>
-        (vsaj <%= v.najmanjPredmetov %>)
-      </legend>
-      <% for (const p of predmeti) { %>
-        <label class="kljukica">
-          <input type="checkbox" name="predmeti" value="<%= p.id %>"
-            <%= izbrani.includes(String(p.id)) ? 'checked' : '' %>>
-          <%= p.naziv %>
-        </label>
-      <% } %>
-    </fieldset>
+    <% if (vrsta === 'ucitelji') { %>
+      <!-- mreža: vrstice so predmeti, stolpci razredi; kljukica = učitelj uči ta predmet v tem razredu -->
+      <fieldset>
+        <legend>Kaj poučuje in v katerem razredu (vsaj 1)</legend>
+        <div class="tabela">
+        <table class="mreza">
+          <tr>
+            <th>Predmet</th>
+            <% for (const r of razredi) { %><th><%= r.naziv %></th><% } %>
+          </tr>
+          <% for (const p of predmeti) { %>
+          <tr>
+            <td><%= p.naziv %></td>
+            <% for (const r of razredi) { %>
+              <% const kljuc = p.id + '-' + r.id; %>
+              <td>
+                <input type="checkbox" name="poucuje" value="<%= kljuc %>"
+                  aria-label="<%= p.naziv %> <%= r.naziv %>"
+                  <%= izbrani.includes(kljuc) ? 'checked' : '' %>>
+              </td>
+            <% } %>
+          </tr>
+          <% } %>
+        </table>
+        </div>
+      </fieldset>
+
+    <% } else { %>
+      <label>Razred
+        <select name="razred_id" required>
+          <option value="">Izberite razred</option>
+          <% for (const r of razredi) { %>
+            <option value="<%= r.id %>" <%= String(oseba.razred_id) === String(r.id) ? 'selected' : '' %>><%= r.naziv %></option>
+          <% } %>
+        </select>
+      </label>
+
+      <!-- predmeti s kljukicami; obkljukani so tisti, ki so že izbrani -->
+      <fieldset>
+        <legend>Predmeti, ki jih obiskuje (vsaj <%= v.najmanjPredmetov %>)</legend>
+        <% for (const p of predmeti) { %>
+          <label class="kljukica">
+            <input type="checkbox" name="predmeti" value="<%= p.id %>"
+              <%= izbrani.includes(String(p.id)) ? 'checked' : '' %>>
+            <%= p.naziv %>
+          </label>
+        <% } %>
+      </fieldset>
+    <% } %>
 
     <button type="submit">Shrani</button>
     <a href="/admin/<%= vrsta %>">Prekliči</a>

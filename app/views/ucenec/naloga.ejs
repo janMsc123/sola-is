@@ -1,0 +1,52 @@
+<!-- ucenec/naloga.ejs - razpisana naloga: navodila, rok, oddaja, moja datoteka in ocena -->
+<%- include('../glava', { naslov: naloga.naslov }) %>
+
+<% const st = stanje({ oddaja_id: oddaja && oddaja.id, zamuda: oddaja && oddaja.zamuda, ocena: oddaja && oddaja.ocena }, naloga.rok, zdaj); %>
+
+<p class="drobtine"><a href="/ucenec/predmet/<%= naloga.predmet_id %>"><%= naloga.predmet %></a></p>
+
+<h1><%= naloga.naslov %> <span class="oznaka <%= st.barva %> velika"><%= st.besedilo %></span></h1>
+
+<% if (napaka) { %>
+  <p class="napaka"><%= napaka %></p>
+<% } %>
+
+<div class="okvir">
+  <p><b>Rok:</b> <%= datumUra(naloga.rok) %> · <b>Učitelj:</b> <%= naloga.ucitelj %></p>
+  <% if (naloga.navodila) { %>
+    <p class="navodila"><%= naloga.navodila %></p>
+  <% } %>
+</div>
+
+<% if (oddaja) { %>
+  <h2>Moja oddaja</h2>
+  <div class="okvir">
+    <p>
+      <a href="/ucenec/oddaja/<%= oddaja.id %>"><%= oddaja.ime_datoteke %></a>
+      <small>(oddano <%= datumUra(oddaja.oddano) %><%= oddaja.zamuda ? ', po roku' : '' %>)</small>
+    </p>
+    <% if (oddaja.ocena) { %>
+      <p><b>Ocena:</b> <span class="oznaka ocena velika"><%= oddaja.ocena %></span></p>
+    <% } %>
+    <% if (oddaja.komentar) { %>
+      <p><b>Komentar učitelja:</b> <%= oddaja.komentar %></p>
+    <% } %>
+  </div>
+<% } %>
+
+<% if (!oddaja || !oddaja.ocena) { %>
+  <h2><%= oddaja ? 'Zamenjaj oddajo' : 'Oddaj nalogo' %></h2>
+  <% if (new Date(naloga.rok) < zdaj) { %>
+    <p class="napaka">Rok je že potekel. Nalogo lahko še oddaš, a bo označena kot oddana z zamudo.</p>
+  <% } %>
+  <!-- ime datoteke bo "Priimek Ime - <naslov naloge>.končnica" -->
+  <form method="post" action="/ucenec/naloga/<%= naloga.id %>/oddaja"
+        enctype="multipart/form-data" class="okvir">
+    <label>Datoteka (največ 20 MB)
+      <input type="file" name="datoteka" required>
+    </label>
+    <button type="submit">Oddaj</button>
+  </form>
+<% } %>
+
+<%- include('../noga') %>

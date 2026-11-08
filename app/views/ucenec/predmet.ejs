@@ -1,10 +1,33 @@
-<!-- ucenec/predmet.ejs — gradiva predmeta in oddaja naloge -->
+<!-- ucenec/predmet.ejs - gradiva, razpisane naloge in proste oddaje pri enem predmetu -->
 <%- include('../glava', { naslov: predmet.naziv }) %>
 
 <h1><%= predmet.naziv %></h1>
+<% if (ucitelji.length > 0) { %>
+  <p>Učitelj: <%= ucitelji.map(t => t.ime + ' ' + t.priimek).join(', ') %> · razred <%= razred.razred %></p>
+<% } %>
 
 <% if (napaka) { %>
   <p class="napaka"><%= napaka %></p>
+<% } %>
+
+<h2>Naloge</h2>
+
+<% if (naloge.length === 0) { %>
+  <p>Učitelj še ni razpisal nobene naloge.</p>
+<% } else { %>
+<div class="tabela">
+<table>
+  <tr><th>Naloga</th><th>Rok</th><th>Stanje</th></tr>
+  <% for (const n of naloge) { %>
+  <% const st = stanje(n, n.rok, zdaj); %>
+  <tr>
+    <td><a href="/ucenec/naloga/<%= n.id %>"><%= n.naslov %></a></td>
+    <td><%= datumUra(n.rok) %></td>
+    <td><span class="oznaka <%= st.barva %>"><%= st.besedilo %></span></td>
+  </tr>
+  <% } %>
+</table>
+</div>
 <% } %>
 
 <h2>Gradiva</h2>
@@ -16,19 +39,20 @@
     <% for (const g of gradiva) { %>
       <li>
         <a href="/ucenec/gradivo/<%= g.id %>"><%= g.ime_datoteke %></a>
-        <small>(<%= g.nalozeno.toLocaleDateString('sl-SI') %>)</small>
+        <small>(<%= datum(g.nalozeno) %>)</small>
       </li>
     <% } %>
   </ul>
 <% } %>
 
-<h2>Oddaja naloge</h2>
+<h2>Druga oddaja</h2>
+<p><small>Za nalogo, ki je učitelj ni razpisal zgoraj. Razpisane naloge oddaš s klikom na nalogo.</small></p>
 
 <!-- datoteka se shrani kot "Priimek Ime - Naslov naloge.končnica" -->
 <form method="post" action="/ucenec/predmet/<%= predmet.id %>/oddaja"
       enctype="multipart/form-data" class="okvir">
   <label>Naslov naloge
-    <input name="naslov" placeholder="npr. Domača naloga 1" required>
+    <input name="naslov" maxlength="100" placeholder="npr. Domača naloga 1" required>
   </label>
   <label>Datoteka
     <input type="file" name="datoteka" required>
@@ -36,14 +60,16 @@
   <button type="submit">Oddaj</button>
 </form>
 
-<h2>Moje oddane naloge</h2>
-
-<% if (naloge.length === 0) { %>
-  <p>Pri tem predmetu še niste oddali nobene naloge.</p>
-<% } else { %>
+<% if (proste.length > 0) { %>
+  <h3>Moje druge oddaje</h3>
   <ul>
-    <% for (const n of naloge) { %>
-      <li><%= n.ime_datoteke %> <small>(<%= n.oddano.toLocaleString('sl-SI') %>)</small></li>
+    <% for (const o of proste) { %>
+      <li>
+        <a href="/ucenec/oddaja/<%= o.id %>"><%= o.ime_datoteke %></a>
+        <small>(<%= datumUra(o.oddano) %>)</small>
+        <% if (o.ocena) { %><span class="oznaka ocena">Ocena <%= o.ocena %></span><% } %>
+        <% if (o.komentar) { %><br><small>Komentar učitelja: <%= o.komentar %></small><% } %>
+      </li>
     <% } %>
   </ul>
 <% } %>

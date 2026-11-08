@@ -19,6 +19,14 @@
     <label>Email
       <input type="email" name="email" value="<%= podatki.email || '' %>" required>
     </label>
+    <label>Razred
+      <select name="razred_id" required>
+        <option value="">Izberite razred</option>
+        <% for (const r of razredi) { %>
+          <option value="<%= r.id %>" <%= String(podatki.razred_id) === String(r.id) ? 'selected' : '' %>><%= r.naziv %></option>
+        <% } %>
+      </select>
+    </label>
     <label>Geslo (vsaj 6 znakov)
       <input type="password" name="geslo" minlength="6" required>
     </label>

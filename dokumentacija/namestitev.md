@@ -51,6 +51,19 @@ curl http://localhost:8097/api/health    # {"status":"ok","db":true}
 Ob prvem zagonu MariaDB izvede skripte iz `db/init/` po abecedi: najprej `01-schema.sql` (tabele),
 nato `02-testni-podatki.sql`. To se zgodi samo, ko je volumen baze prazen.
 
+**Posodobitev obstoječe baze na različico 2.** Skripte v `db/init/` se ne izvedejo znova, ko baza že
+ima podatke. Bazo iz različice 1 zato enkrat posodobimo z migracijo (doda razrede, razpisane naloge in
+ocene, stare podatke ohrani):
+```bash
+./scripts/backup.sh
+source .env
+docker compose exec -T baza mariadb -u"$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" \
+  < db/migracije/2026-11-razredi-naloge.sql
+```
+
+**Časovni pas:** oba vsebnika imata `TZ: Europe/Ljubljana`, da se roki nalog (vpisani v slovenskem
+času) pravilno primerjajo s časom oddaje.
+
 **Ponastavitev baze na testne podatke** (pobriše vse podatke!):
 ```bash
 docker compose down
@@ -130,14 +143,16 @@ gunzip -c varnostne-kopije/sola_is-2026-10-11_0300.sql.gz \
 | `app/preveri.js` | preverjanje pravic: `samo('administrator')` in podobno |
 | `app/datoteke.js` | nastavitve za nalaganje datotek (multer, največ 20 MB) |
 | `app/routes/prijava.js` | prijava, registracija učenca, odjava |
-| `app/routes/admin.js` | CRUD predmetov, učiteljev in učencev ter povezave s predmeti |
-| `app/routes/ucitelj.js` | gradiva in pregled oddanih nalog |
-| `app/routes/ucenec.js` | profil, izbira predmetov, gradiva, oddaja nalog |
+| `app/routes/admin.js` | CRUD razredov, predmetov, učiteljev in učencev ter kdo kaj uči v katerem razredu |
+| `app/routes/ucitelj.js` | skupine (predmet v razredu), gradiva, razpis nalog, pregled in ocenjevanje oddaj |
+| `app/routes/ucenec.js` | profil, izbira predmetov, gradiva, naloge, oddaja, prenos oddaj, ocene |
+| `app/routes/koledar.js` | mesečni koledar rokov za učitelja in učenca |
 | `app/views/` | HTML predloge (EJS), ena mapa za vsak pogled |
 | `db/init/` | SQL za tabele in testne podatke (izvede se ob prvem zagonu) |
+| `db/migracije/` | SQL za posodobitev obstoječe baze na novo različico (zažene se ročno) |
 | `scripts/` | auto-deploy, varnostna kopija, systemd enote |
 
-Podatkovni model (8 tabel) je opisan v [specifikacija.md](specifikacija.md), slika je v
+Podatkovni model (10 tabel) je opisan v [specifikacija.md](specifikacija.md), slika je v
 [er-diagram.png](er-diagram.png).
 
 ## 10. Vsakdanje vzdrževanje

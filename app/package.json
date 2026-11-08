@@ -1,6 +1,6 @@
 {
   "name": "sola-is",
-  "version": "0.2.0",
+  "version": "2.0.0",
   "private": true,
   "description": "Šolski informacijski sistem — projekt zaključnega izpita",
   "main": "server.js",

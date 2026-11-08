@@ -8,7 +8,14 @@
 INSERT INTO uporabniki (email, geslo_hash, vloga) VALUES
 ('admin@sola.si', '$2b$10$eqh6ZdmT86KffGSyx7y7zO990P3dpF.ksKxsK7EctSsfjVYd3FnAu', 'administrator');
 
--- ============ 2) PREDMETI (10) ============
+-- ============ 2) RAZREDI (4) ============
+INSERT INTO razredi (naziv) VALUES
+('1.A'),
+('2.A'),
+('3.A'),
+('4.A');
+
+-- ============ 2b) PREDMETI (10) ============
 INSERT INTO predmeti (naziv) VALUES
 ('Matematika'),
 ('Slovenščina'),
@@ -275,36 +282,56 @@ INSERT INTO ucenci (uporabnik_id, ime, priimek) VALUES
 (120, 'Jan', 'Zajc'),
 (121, 'Žiga', 'Golob');
 
--- ============ 5) KDO UČI KAJ (ucitelj_predmet) ============
--- vsak predmet imata vsaj 2 učitelja,
--- učitelji 1-5 učijo po 2 predmeta, zato imajo nekateri predmeti 3 učitelje
--- (ucitelj_id, predmet_id)
-INSERT INTO ucitelj_predmet (ucitelj_id, predmet_id) VALUES
-(1, 1),
-(2, 2),
-(3, 3),
-(4, 4),
-(5, 5),
-(6, 6),
-(7, 7),
-(8, 8),
-(9, 9),
-(10, 10),
-(11, 1),
-(12, 2),
-(13, 3),
-(14, 4),
-(15, 5),
-(16, 6),
-(17, 7),
-(18, 8),
-(19, 9),
-(20, 10),
-(1, 6),
-(2, 7),
-(3, 8),
-(4, 9),
-(5, 10);
+-- razred učenca: po vrsti 1.A, 2.A, 3.A, 4.A, 1.A ... (25 učencev v vsakem razredu)
+-- MOD(id - 1, 4) je ostanek pri deljenju s 4, torej 0, 1, 2 ali 3
+UPDATE ucenci SET razred_id = MOD(id - 1, 4) + 1;
+
+-- ============ 5) KDO UČI KAJ IN V KATEREM RAZREDU (ucitelj_predmet) ============
+-- vsak predmet imata vsaj 2 učitelja, vsak uči v svojih razredih,
+-- učitelji 1-5 učijo po 2 predmeta, zato imajo nekateri predmeti 3 učitelje.
+-- V vsakem razredu uči posamezen predmet natanko en učitelj.
+-- (ucitelj_id, predmet_id, razred_id), razred 1 = 1.A ... 4 = 4.A
+INSERT INTO ucitelj_predmet (ucitelj_id, predmet_id, razred_id) VALUES
+(1, 1, 1),
+(1, 1, 3),
+(1, 6, 1),
+(1, 6, 4),
+(2, 2, 1),
+(2, 2, 3),
+(2, 7, 1),
+(2, 7, 4),
+(3, 3, 1),
+(3, 3, 3),
+(3, 8, 1),
+(3, 8, 4),
+(4, 4, 1),
+(4, 4, 3),
+(4, 9, 1),
+(4, 9, 4),
+(5, 5, 1),
+(5, 5, 3),
+(5, 10, 1),
+(5, 10, 4),
+(6, 6, 2),
+(7, 7, 2),
+(8, 8, 2),
+(9, 9, 2),
+(10, 10, 2),
+(11, 1, 2),
+(11, 1, 4),
+(12, 2, 2),
+(12, 2, 4),
+(13, 3, 2),
+(13, 3, 4),
+(14, 4, 2),
+(14, 4, 4),
+(15, 5, 2),
+(15, 5, 4),
+(16, 6, 3),
+(17, 7, 3),
+(18, 8, 3),
+(19, 9, 3),
+(20, 10, 3);
 
 -- ============ 6) KAJ OBISKUJE UČENEC (ucenec_predmet) ============
 -- vsak učenec obiskuje 3 predmete.
@@ -319,3 +346,24 @@ SELECT id, MOD(id + 3, 10) + 1 FROM ucenci;
 INSERT INTO ucenec_predmet (ucenec_id, predmet_id)
 SELECT id, MOD(id + 6, 10) + 1 FROM ucenci;
 
+-- ============ 7) RAZPISANE NALOGE ============
+-- Vsak učitelj razpiše v vsakem svojem razredu tri naloge: eno z rokom, ki je že potekel,
+-- in dve s prihodnjim rokom. Roki so izračunani od dneva namestitve (CURDATE), da je
+-- koledar vedno živ. Rok je ob 23:59.
+INSERT INTO naloge (predmet_id, razred_id, ucitelj_id, naslov, navodila, rok)
+SELECT up.predmet_id, up.razred_id, up.ucitelj_id, 'Domača naloga 1',
+  CONCAT('Reši vaje iz učbenika pri predmetu ', p.naziv, ' in oddaj rešitve kot PDF.'),
+  TIMESTAMP(CURDATE() - INTERVAL 4 DAY, '23:59:00')
+FROM ucitelj_predmet up JOIN predmeti p ON p.id = up.predmet_id;
+
+INSERT INTO naloge (predmet_id, razred_id, ucitelj_id, naslov, navodila, rok)
+SELECT up.predmet_id, up.razred_id, up.ucitelj_id, 'Domača naloga 2',
+  CONCAT('Ponovi snov zadnjih dveh ur pri predmetu ', p.naziv, ' in odgovori na vprašanja iz gradiva.'),
+  TIMESTAMP(CURDATE() + INTERVAL (3 + MOD(up.predmet_id, 5)) DAY, '23:59:00')
+FROM ucitelj_predmet up JOIN predmeti p ON p.id = up.predmet_id;
+
+INSERT INTO naloge (predmet_id, razred_id, ucitelj_id, naslov, navodila, rok)
+SELECT up.predmet_id, up.razred_id, up.ucitelj_id, 'Seminarska naloga',
+  CONCAT('Izberi temo pri predmetu ', p.naziv, ', napiši 3 do 5 strani in oddaj dokument (PDF ali Word).'),
+  TIMESTAMP(CURDATE() + INTERVAL (14 + up.predmet_id) DAY, '23:59:00')
+FROM ucitelj_predmet up JOIN predmeti p ON p.id = up.predmet_id;

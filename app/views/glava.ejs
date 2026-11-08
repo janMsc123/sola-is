@@ -20,15 +20,19 @@
       <a href="/registracija">Registracija</a>
 
     <% } else if (uporabnik.vloga === 'administrator') { %>
+      <a href="/admin/razredi">Razredi</a>
       <a href="/admin/predmeti">Predmeti</a>
       <a href="/admin/ucitelji">Učitelji</a>
       <a href="/admin/ucenci">Učenci</a>
 
     <% } else if (uporabnik.vloga === 'ucitelj') { %>
       <a href="/ucitelj">Moji predmeti</a>
+      <a href="/koledar">Koledar</a>
 
     <% } else { %>
       <a href="/ucenec">Moji predmeti</a>
+      <a href="/koledar">Koledar</a>
+      <a href="/ucenec/ocene">Ocene</a>
       <a href="/ucenec/predmeti">Izbira predmetov</a>
       <a href="/ucenec/profil">Profil</a>
     <% } %>
