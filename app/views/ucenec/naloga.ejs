@@ -3,50 +3,64 @@
 
 <% const st = stanje({ oddaja_id: oddaja && oddaja.id, zamuda: oddaja && oddaja.zamuda, ocena: oddaja && oddaja.ocena }, naloga.rok, zdaj); %>
 
-<p class="drobtine"><a href="/ucenec/predmet/<%= naloga.predmet_id %>"><%= naloga.predmet %></a></p>
-
-<h1><%= naloga.naslov %> <span class="oznaka <%= st.barva %> velika"><%= st.besedilo %></span></h1>
+<div class="naslov-strani">
+  <div>
+    <a class="nazaj" href="/ucenec/predmet/<%= naloga.predmet_id %>">← <%= naloga.predmet %></a>
+    <h1><%= naloga.naslov %></h1>
+  </div>
+</div>
 
 <% if (napaka) { %>
   <p class="napaka"><%= napaka %></p>
 <% } %>
 
 <div class="okvir">
-  <p><b>Rok:</b> <%= datumUra(naloga.rok) %> · <b>Učitelj:</b> <%= naloga.ucitelj %></p>
-  <% if (naloga.navodila) { %>
-    <p class="navodila"><%= naloga.navodila %></p>
-  <% } %>
+  <div class="okvir-vsebina">
+    <div class="podatki">
+      <div><span>Rok</span><b><%= datumUra(naloga.rok) %></b></div>
+      <div><span>Učitelj</span><b><%= naloga.ucitelj %></b></div>
+      <div><span>Stanje</span><span class="stanje <%= st.barva %>"><%= st.besedilo %></span></div>
+    </div>
+    <% if (naloga.navodila) { %>
+      <p class="navodila"><%= naloga.navodila %></p>
+    <% } %>
+  </div>
 </div>
 
 <% if (oddaja) { %>
-  <h2>Moja oddaja</h2>
-  <div class="okvir">
-    <p>
-      <a href="/ucenec/oddaja/<%= oddaja.id %>"><%= oddaja.ime_datoteke %></a>
-      <small>(oddano <%= datumUra(oddaja.oddano) %><%= oddaja.zamuda ? ', po roku' : '' %>)</small>
-    </p>
-    <% if (oddaja.ocena) { %>
-      <p><b>Ocena:</b> <span class="oznaka ocena velika"><%= oddaja.ocena %></span></p>
-    <% } %>
+<div class="okvir">
+  <div class="okvir-glava"><h2>Moja oddaja</h2></div>
+  <div class="okvir-vsebina">
+    <div class="vrstica razmaknjeno">
+      <div>
+        <a href="/ucenec/oddaja/<%= oddaja.id %>"><b><%= oddaja.ime_datoteke %></b></a>
+        <div class="drobno">Oddano <%= datumUra(oddaja.oddano) %><%= oddaja.zamuda ? ', po roku' : '' %></div>
+      </div>
+      <% if (oddaja.ocena) { %><span class="ocena velika"><%= oddaja.ocena %></span><% } %>
+    </div>
     <% if (oddaja.komentar) { %>
-      <p><b>Komentar učitelja:</b> <%= oddaja.komentar %></p>
+      <p class="komentar"><%= oddaja.komentar %></p>
     <% } %>
   </div>
+</div>
 <% } %>
 
 <% if (!oddaja || !oddaja.ocena) { %>
-  <h2><%= oddaja ? 'Zamenjaj oddajo' : 'Oddaj nalogo' %></h2>
-  <% if (new Date(naloga.rok) < zdaj) { %>
-    <p class="napaka">Rok je že potekel. Nalogo lahko še oddaš, a bo označena kot oddana z zamudo.</p>
-  <% } %>
-  <!-- ime datoteke bo "Priimek Ime - <naslov naloge>.končnica" -->
-  <form method="post" action="/ucenec/naloga/<%= naloga.id %>/oddaja"
-        enctype="multipart/form-data" class="okvir">
-    <label>Datoteka (največ 20 MB)
-      <input type="file" name="datoteka" required>
-    </label>
-    <button type="submit">Oddaj</button>
-  </form>
+<div class="okvir">
+  <div class="okvir-glava"><h2><%= oddaja ? 'Zamenjaj oddajo' : 'Oddaj nalogo' %></h2></div>
+  <div class="okvir-vsebina">
+    <% if (new Date(naloga.rok) < zdaj) { %>
+      <p class="napaka">Rok je potekel. Oddaja bo označena kot oddana z zamudo.</p>
+    <% } %>
+    <!-- ime datoteke bo "Priimek Ime - <naslov naloge>.končnica" -->
+    <form method="post" action="/ucenec/naloga/<%= naloga.id %>/oddaja" enctype="multipart/form-data">
+      <label>Datoteka (največ 20 MB)
+        <input type="file" name="datoteka" required>
+      </label>
+      <button type="submit">Oddaj</button>
+    </form>
+  </div>
+</div>
 <% } %>
 
 <%- include('../noga') %>

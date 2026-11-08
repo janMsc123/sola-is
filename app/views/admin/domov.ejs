@@ -1,28 +1,21 @@
-<!-- admin/domov.ejs — začetna stran administratorja -->
+<!-- admin/domov.ejs - začetna stran administratorja -->
 <%- include('../glava', { naslov: 'Administrator' }) %>
 
-<h1>Administrator</h1>
+<div class="naslov-strani">
+  <div>
+    <h1>Pregled</h1>
+    <p class="podnaslov">Stanje šole v številkah</p>
+  </div>
+</div>
 
 <!-- kartice s številom zapisov -->
 <div class="kartice">
-  <a class="kartica" href="/admin/razredi">
-    <b><%= st.razredi %></b> razredov
-  </a>
-  <a class="kartica" href="/admin/predmeti">
-    <b><%= st.predmeti %></b> predmetov
-  </a>
-  <a class="kartica" href="/admin/ucitelji">
-    <b><%= st.ucitelji %></b> učiteljev
-  </a>
-  <a class="kartica" href="/admin/ucenci">
-    <b><%= st.ucenci %></b> učencev
-  </a>
-  <div class="kartica">
-    <b><%= st.naloge %></b> razpisanih nalog
-  </div>
-  <div class="kartica">
-    <b><%= st.oddaje %></b> oddaj učencev
-  </div>
+  <a class="kartica" href="/admin/razredi"><span class="stevilka"><%= st.razredi %></span>razredov</a>
+  <a class="kartica" href="/admin/predmeti"><span class="stevilka"><%= st.predmeti %></span>predmetov</a>
+  <a class="kartica" href="/admin/ucitelji"><span class="stevilka"><%= st.ucitelji %></span>učiteljev</a>
+  <a class="kartica" href="/admin/ucenci"><span class="stevilka"><%= st.ucenci %></span>učencev</a>
+  <div class="kartica"><span class="stevilka"><%= st.naloge %></span>razpisanih nalog</div>
+  <div class="kartica"><span class="stevilka"><%= st.oddaje %></span>oddaj učencev</div>
 </div>
 
 <%- include('../noga') %>

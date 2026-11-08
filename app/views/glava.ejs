@@ -1,4 +1,4 @@
-<!-- glava.ejs — vrh vsake strani: naslov in meni glede na vlogo -->
+<!-- glava.ejs - vrh vsake strani: naslov in meni glede na vlogo -->
 <!doctype html>
 <html lang="sl">
 <head>
@@ -10,38 +10,52 @@
 </head>
 <body>
 
+<%
+  // povezava v meniju; "aktivna" je, če smo na tej strani ali pod njo
+  // (glavna stran /ucenec je aktivna tudi na /ucenec/predmet/..., ne pa na /ucenec/ocene)
+  function meni(href, besedilo, tudi) {
+    const aktivna = pot === href || (tudi || []).some(z => pot.startsWith(z));
+    return '<a href="' + href + '"' + (aktivna ? ' class="aktivna"' : '') + '>' + besedilo + '</a>';
+  }
+%>
+
 <header>
   <a href="/" class="logo">Šolski IS</a>
 
   <nav>
     <% if (!uporabnik) { %>
-      <!-- ni prijavljen -->
-      <a href="/prijava">Prijava</a>
-      <a href="/registracija">Registracija</a>
+      <%- meni('/prijava', 'Prijava') %>
+      <%- meni('/registracija', 'Registracija') %>
 
     <% } else if (uporabnik.vloga === 'administrator') { %>
-      <a href="/admin/razredi">Razredi</a>
-      <a href="/admin/predmeti">Predmeti</a>
-      <a href="/admin/ucitelji">Učitelji</a>
-      <a href="/admin/ucenci">Učenci</a>
+      <%- meni('/admin', 'Pregled') %>
+      <%- meni('/admin/razredi', 'Razredi', ['/admin/razredi/']) %>
+      <%- meni('/admin/predmeti', 'Predmeti', ['/admin/predmeti/']) %>
+      <%- meni('/admin/ucitelji', 'Učitelji', ['/admin/ucitelji/']) %>
+      <%- meni('/admin/ucenci', 'Učenci', ['/admin/ucenci/']) %>
 
     <% } else if (uporabnik.vloga === 'ucitelj') { %>
-      <a href="/ucitelj">Moji predmeti</a>
-      <a href="/koledar">Koledar</a>
+      <%- meni('/ucitelj', 'Moji predmeti', ['/ucitelj/']) %>
+      <%- meni('/koledar', 'Koledar') %>
 
     <% } else { %>
-      <a href="/ucenec">Moji predmeti</a>
-      <a href="/koledar">Koledar</a>
-      <a href="/ucenec/ocene">Ocene</a>
-      <a href="/ucenec/predmeti">Izbira predmetov</a>
-      <a href="/ucenec/profil">Profil</a>
-    <% } %>
-
-    <% if (uporabnik) { %>
-      <span class="ime"><%= uporabnik.ime %></span>
-      <a href="/odjava">Odjava</a>
+      <%- meni('/ucenec', 'Moji predmeti', ['/ucenec/predmet/', '/ucenec/naloga/', '/ucenec/potrdi/']) %>
+      <%- meni('/koledar', 'Koledar') %>
+      <%- meni('/ucenec/ocene', 'Ocene') %>
+      <%- meni('/ucenec/predmeti', 'Izbira predmetov') %>
     <% } %>
   </nav>
+
+  <% if (uporabnik) { %>
+    <div class="uporabnik">
+      <% if (uporabnik.vloga === 'ucenec') { %>
+        <a href="/ucenec/profil" class="ime"><%= uporabnik.ime %></a>
+      <% } else { %>
+        <span class="ime"><%= uporabnik.ime %></span>
+      <% } %>
+      <a href="/odjava" class="gumb siv majhen">Odjava</a>
+    </div>
+  <% } %>
 </header>
 
 <main>
