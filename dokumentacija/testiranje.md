@@ -103,6 +103,54 @@ Status: **OK** = dejanski rezultat je enak pričakovanemu, **NAPAKA** = ni (pove
 | T58 | Prikaz na telefonu (390 px): pogled učenca | stran se prilagodi ozkemu zaslonu | kartice predmetov so čez celo širino, meni je v dveh vrsticah | OK |
 | T59 | Prikaz na telefonu (390 px): seznam učencev pri administratorju | vidni vsi stolpci in gumba Uredi/Briši | tabela se premika levo-desno, desno so Predmeti ter Uredi/Briši | OK |
 
+
+## Različica 2: razredi, naloge z rokom, ocene, koledar
+
+| | |
+|---|---|
+| Datum testiranja | 8. 11. 2026 |
+| Okolje | ločena kopija (`docker compose -p sola-is-test`, port 8197): enkrat s svežimi testnimi podatki, enkrat s kopijo produkcijske baze, posodobljeno z migracijo |
+| Način | skripta Playwright (Chromium), 60 preverjanj |
+| Rezultat | **32 od 32** testov uspešnih, brez napak 500 |
+
+| ID | Pogled | Opis | Pričakovani rezultat | Status |
+|---|---|---|---|---|
+| T60 | Administrator | Dodajanje razreda 1.B in razreda z obstoječim nazivom | razred na seznamu; napaka "Razred s tem nazivom že obstaja." | OK |
+| T61 | Administrator | Preimenovanje in brisanje razreda | nov naziv na seznamu, po brisanju ga ni | OK |
+| T62 | Administrator | Razred 1.A: pouk in učenci | vidi, kdo uči kateri predmet (Matematika: Petra Bizjak) in 25 učencev | OK |
+| T63 | Administrator | Seznam učiteljev z razredi | pri Petri Bizjak "Matematika (1.A, 3.A)" | OK |
+| T64 | Administrator | Nov učitelj brez kljukice v mreži | napaka "Izberite vsaj 1 predmet v vsaj enem razredu." | OK |
+| T65 | Administrator | Nov učitelj: Fizika in Informatika v 1.B (mreža) | na seznamu "Fizika (1.B), Informatika (1.B)" | OK |
+| T66 | Administrator | Nov učenec brez razreda (obide brskalnik) | napaka "Izberite razred." | OK |
+| T67 | Administrator | Filter učencev po razredu 2.A | prikazanih 25 učencev | OK |
+| T68 | Učitelj | Domača stran Petre Bizjak | 4 skupine (Matematika 1.A, 3.A, Biologija 1.A, 4.A) in prihajajoči roki | OK |
+| T69 | Učitelj | Odpiranje Matematike v 2.A (tuj razred) in Slovenščine v 1.A | oboje 403 | OK |
+| T70 | Učitelj | Razpis naloge "Kvadratna enačba" z rokom jutri ob 18:00 | naloga v tabeli skupine | OK |
+| T71 | Učitelj | Odpiranje naloge drugega učitelja | 403 | OK |
+| T72 | Učitelj | Pregled naloge: kdo je oddal | "Oddalo: 1 od 5", stanje vsakega učenca | OK |
+| T73 | Učitelj | Ocena 5 s komentarjem | pri učencu "Ocena 5" | OK |
+| T74 | Učitelj | Prenos oddaje in ocena proste oddaje | datoteka s pravim imenom; ocena 4 shranjena | OK |
+| T75 | Učitelj | Urejanje navodil naloge in brisanje naloge | spremenjena navodila; po brisanju naloge ni | OK |
+| T76 | Učitelj | Koledar učitelja | roki z oznako razreda, npr. "Matematika 1.A" | OK |
+| T77 | Učenec | Domača stran učenca (Miha Horvat, 1.A) | razred, učitelj na kartici, seznam "Za oddati" z zamujenimi | OK |
+| T78 | Učenec | Stanje nalog pri predmetu | "Odprto" za prihodnji rok, "Ni oddano" za potekel rok | OK |
+| T79 | Učenec | Oddaja k razpisani nalogi | ime "Horvat Miha - Kvadratna enačba.pdf", stanje "Oddano" | OK |
+| T80 | Učenec | Prenos lastne oddaje | datoteka se prenese, vsebina je prva verzija | OK |
+| T81 | Učenec | Ponovna oddaja z drugo končnico (.docx) in potrditev | vprašanje za potrditev; ostane samo .docx | OK |
+| T82 | Učenec | Oddaja po roku | "Oddano z zamudo" pri učencu in učitelju | OK |
+| T83 | Učenec | Prosta oddaja in preklic ponovne oddaje (zahtevi D5, D6) | ena oddaja "Horvat Miha - Dodatna vaja.pdf" | OK |
+| T84 | Učenec | Odpiranje naloge drugega razreda | 403 | OK |
+| T85 | Učenec | Koledar: tekoči in naslednji mesec, napačen mesec v naslovu | roki prikazani; december; napačen mesec pokaže tekočega | OK |
+| T86 | Učenec | Stran Ocene | 3 ocene s komentarjem, povprečje 4,00 | OK |
+| T87 | Učenec | Zamenjava ocenjene naloge (tudi z ročno zahtevo POST) | obrazca ni; zahteva zavrnjena "Naloga je že ocenjena" | OK |
+| T88 | Učenec | Drug učenec odpre tujo oddajo | 403 | OK |
+| T89 | Učenec | Registracija z razredom 3.A | v profilu razred 3.A, vidi naloge razreda 3.A | OK |
+| T90 | Skupno | Telefon (390 px): koledar in domača stran učenca | mreža koledarja skrita, roki kot seznam, ni vodoravnega drsenja | OK |
+| T91 | Skupno | Posodobitev kopije produkcijske baze z db/migracije | skripta uspe, vsak predmet ima v vsakem razredu enega učitelja, stare oddaje ostanejo kot druge oddaje | OK |
+
+Napaka [#4](https://github.com/janMsc123/sola-is/issues/4) (500 ob predolgem naslovu) se pri novih
+obrazcih ne pojavi: naslov naloge je omejen na 100 znakov, strežnik daljšega zavrne s sporočilom.
+
 ## Najdene napake
 
 | Issue | Test | Napaka | Resnost |
