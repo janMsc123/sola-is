@@ -156,8 +156,8 @@ in komentar; ocenjene naloge ne moreš več zamenjati.
 
 ![Naloga pri učencu](slike/ucenec-naloga.png)
 
-**Druga oddaja:** če moraš oddati nekaj, česar učitelj ni razpisal, na strani predmeta pod *Druga
-oddaja* sam vpiši naslov in izberi datoteko.
+**Druga oddaja:** če moraš oddati nekaj, česar učitelj ni razpisal, na strani predmeta odpri *Druga
+oddaja* (gumb **Pokaži**), vpiši naslov in izberi datoteko.
 
 **Ponovna oddaja:** če nalogo oddaš še enkrat, te aplikacija vpraša, ali želiš zamenjati prejšnjo
 oddajo. **Da, zamenjaj** prejšnjo datoteko zamenja z novo, **Ne, obdrži prejšnjo** pa novo
